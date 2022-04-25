@@ -28,8 +28,8 @@ const Bookingcard = ({ origin, destination, price }) => {
           dashStyle={{
             borderRadius: 100,
             overflow: "hidden",
-            width: 7,
-            height: 7,
+            width: 6,
+            height: 6,
           }}
           dashColor="#bbb"
         />
@@ -141,11 +141,11 @@ const styles = StyleSheet.create({
     width: 1,
     height: 50,
     flexDirection: "column",
-    marginLeft: 16,
+    marginLeft: 17,
     marginBottom: 8,
   },
   verticalDivider: {
-    width: 2,
+    width: 1,
     height: "100%",
     backgroundColor: "#ddd",
     marginLeft: 20,
