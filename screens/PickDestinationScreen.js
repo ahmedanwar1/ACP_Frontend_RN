@@ -13,64 +13,49 @@ const PickDestinationScreen = () => {
   const [currentCoords, setCurrentCoords] = useState(null);
 
   useEffect(() => {
-    CheckIfLocationEnabled();
+    const enableGPSAndPermission = async () => {
+      const enabled = await CheckIfLocationEnabled();
+      if (enabled) {
+        GetCurrentLocation();
+      }
+    };
+
+    enableGPSAndPermission();
   }, []);
 
+  //check frequently that GPS is enabled
   let checkGPS;
-
-  // useEffect(() => {
-  //   if (GPSEnabled) {
-  //     clearInterval(checkGPS);
-  //   }
-  // }, [GPSEnabled]);
   checkGPS = setInterval(() => {
-    Location.hasServicesEnabledAsync().then((res) => {
-      if (res) {
-        clearInterval(checkGPS);
+    CheckIfLocationEnabled().then((enabled) => {
+      if (enabled) {
+        // clearInterval(checkGPS);
         setGPSEnabled(true);
+      } else {
+        setGPSEnabled(false);
       }
     });
-    console.log("sdkmd", GPSEnabled, currentCoords);
-    // CheckIfLocationEnabled();
-  }, 5000);
-
-  useEffect(() => {
-    console.log(currentCoords);
-  }, [currentCoords]);
+    console.log("GPS: ", GPSEnabled, currentCoords);
+  }, 7000);
 
   const CheckIfLocationEnabled = async () => {
     try {
-      let enabled = await Location.hasServicesEnabledAsync();
+      const enabled = await Location.hasServicesEnabledAsync();
 
-      if (!enabled) {
-        // Alert.alert(
-        //   "Location Service not enabled",
-        //   "Please enable your location services to continue",
-        //   [{ text: "OK" }],
-        //   { cancelable: false }
-        // );
-      } else {
+      if (enabled) {
         setGPSEnabled(true);
-        // console.log(GPSEnabled);
-        GetCurrentLocation();
+        return true;
       }
     } catch (error) {
       console.log(error);
     }
+    return false;
   };
 
   const GetCurrentLocation = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status !== "granted") {
-        // Alert.alert(
-        //   "Permission not granted",
-        //   "Allow the app to use location service.",
-        //   [{ text: "OK" }],
-        //   { cancelable: false }
-        // );
-      } else {
+      if (status == "granted") {
         // Make sure that foreground location tracking is not running
         foregroundSubscription?.remove();
 
@@ -107,7 +92,7 @@ const PickDestinationScreen = () => {
         <Text>Please enable the location Service.</Text>
         <Button
           title="Turn on"
-          onPress={CheckIfLocationEnabled}
+          onPress={GetCurrentLocation}
           buttonStyle={{
             // backgroundColor: "#39B66A",
             width: 300,
