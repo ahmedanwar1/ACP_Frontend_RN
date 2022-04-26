@@ -9,15 +9,31 @@ import MapComponent from "./components/MapComponent";
 import BookingScreen from "./screens/BookingScreen";
 import HistoryScreen from "./screens/HistoryScreen";
 import PickDestinationScreen from "./screens/PickDestinationScreen";
+import LocationPermissionFailedScreen from "./screens/LocationPermissionFailedScreen";
+import GPSConditionScreen from "./screens/GPSConditionScreen";
+
+import { Provider } from "react-redux";
+import { store } from "./store/store";
+
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setGPSEnabled,
+  setCurrentCoords,
+  selectCurrentCoords,
+  selectGPSEnabled,
+} from "./store/slices/mapSlice";
+import Main from "./screens/Main";
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <PickDestinationScreen />
-      {/* <HistoryScreen /> */}
-      {/* <BookingScreen /> */}
-      <StatusBar backgroundColor="rgba(0,0,0,0)" />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <Main />
+        {/* <HistoryScreen /> */}
+        {/* <BookingScreen /> */}
+        <StatusBar backgroundColor="rgba(0,0,0,0)" />
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 
