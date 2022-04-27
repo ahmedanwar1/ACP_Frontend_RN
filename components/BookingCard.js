@@ -95,7 +95,8 @@ const Bookingcard = ({ origin, destination, price }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    margin: 10,
+    marginBottom: 10,
+    marginHorizontal: 10,
     padding: 10,
     // padding: 10,
     justifyContent: "space-between",

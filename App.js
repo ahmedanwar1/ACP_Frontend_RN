@@ -27,7 +27,12 @@ import {
 import Main from "./screens/Main";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  DrawerActions,
+  NavigationContainer,
+  useNavigation,
+} from "@react-navigation/native";
+import MenuIcon from "./components/MenuIcon";
 
 const Drawer = createDrawerNavigator();
 
@@ -36,11 +41,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <SafeAreaProvider>
-          <Drawer.Navigator initialRouteName="Main">
-            <Drawer.Screen name="Main" component={Main} />
-            <Drawer.Screen name="BookingScreen" component={BookingScreen} />
-            <Drawer.Screen name="historyScreen" component={HistoryScreen} />
-          </Drawer.Navigator>
+          <MyDrawer />
           {/* <Main /> */}
           {/* <HistoryScreen /> */}
           {/* <BookingScreen /> */}
@@ -50,5 +51,41 @@ export default function App() {
     </Provider>
   );
 }
+
+const MyDrawer = () => {
+  return (
+    <Drawer.Navigator initialRouteName="Main">
+      <Drawer.Screen
+        name="Main"
+        component={Main}
+        options={{
+          headerShown: false,
+          // headerTintColor: "transparent",
+          title: "Reservation",
+        }}
+      />
+      <Drawer.Screen
+        name="BookingScreen"
+        component={BookingScreen}
+        options={{
+          title: "Booking",
+          headerTintColor: "#39B66A",
+          headerTitleAlign: "center",
+        }}
+      />
+      <Drawer.Screen
+        name="historyScreen"
+        component={HistoryScreen}
+        options={{
+          // headerTransparent: true,
+          headerTintColor: "#39B66A",
+          headerTitleAlign: "center",
+          title: "History",
+          headerStyle: {},
+        }}
+      />
+    </Drawer.Navigator>
+  );
+};
 
 const styles = StyleSheet.create({});

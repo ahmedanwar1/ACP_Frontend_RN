@@ -20,6 +20,7 @@ import PickDestinationScreen from "./PickDestinationScreen";
 import LocationPermissionFailedScreen from "./LocationPermissionFailedScreen";
 import GPSConditionScreen from "./GPSConditionScreen";
 import DisplayParkingSpacesScreen from "./DisplayParkingSpacesScreen";
+import MenuIcon from "../components/MenuIcon";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,6 @@ const Main = () => {
   const currentCoords = useSelector(selectCurrentCoords);
 
   //tesssssssssst (remove it)
-  // const d = false
   const userIsApprochingSpace = false;
   const carIsParked = false;
 
@@ -60,10 +60,23 @@ const Main = () => {
           <Stack.Screen
             name="PickDestinationScreen"
             component={PickDestinationScreen}
+            // options={{ headerShown: false }}
+            options={{
+              // headerStyle: { backgroundColor: "rgba(0,0,0,0)",  },
+              // headerShown: false,
+              headerTransparent: true,
+              title: "",
+              headerLeft: () => <MenuIcon />,
+            }}
           />
           <Stack.Screen
             name="DisplayParkingSpacesScreen"
             component={DisplayParkingSpacesScreen}
+            options={{
+              title: "PICK YOUR SPACE",
+              headerTitleAlign: "center",
+              headerTintColor: "#39B66A",
+            }}
           />
         </Stack.Group>
       ) : (

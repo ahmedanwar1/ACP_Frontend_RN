@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/themed";
 
@@ -11,6 +11,15 @@ import { useDispatch } from "react-redux";
 
 const LocationPermissionFailedScreen = () => {
   const dispatch = useDispatch();
+
+  let checkGPS;
+  useEffect(() => {
+    checkPermission = async () => {
+      await dispatch(getCurrentLocation());
+    };
+    checkPermission();
+  }, []);
+
   return (
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
