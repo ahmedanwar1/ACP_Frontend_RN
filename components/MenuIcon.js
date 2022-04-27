@@ -29,6 +29,7 @@ export default MenuIcon;
 const styles = StyleSheet.create({
   menuContainer: {
     padding: 10,
+    marginTop: 10,
     marginLeft: 5,
     backgroundColor: "#fff",
     width: 50,

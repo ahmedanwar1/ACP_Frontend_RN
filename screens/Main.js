@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Platform, StatusBar } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -27,8 +27,8 @@ const Stack = createNativeStackNavigator();
 const Main = () => {
   const dispatch = useDispatch();
 
-  const GPSEnabled = useSelector(selectGPSEnabled);
-  const currentCoords = useSelector(selectCurrentCoords);
+  let GPSEnabled = useSelector(selectGPSEnabled);
+  let currentCoords = useSelector(selectCurrentCoords);
 
   //tesssssssssst (remove it)
   const userIsApprochingSpace = false;
@@ -40,7 +40,7 @@ const Main = () => {
     checkGPS = setInterval(async () => {
       await dispatch(checkIfLocationEnabled());
       console.log("GPS: ", GPSEnabled, currentCoords);
-    }, 7000);
+    }, 3000);
     return () => clearInterval(checkGPS);
   }, [GPSEnabled]);
 
@@ -62,7 +62,11 @@ const Main = () => {
             component={PickDestinationScreen}
             // options={{ headerShown: false }}
             options={{
-              // headerStyle: { backgroundColor: "rgba(0,0,0,0)",  },
+              headerStyle: {
+                backgroundColor: "rgba(0,0,0,0)",
+                // marginTop:
+                //   Platform.OS === "android" ? StatusBar.currentHeight : 0,
+              },
               // headerShown: false,
               headerTransparent: true,
               title: "",

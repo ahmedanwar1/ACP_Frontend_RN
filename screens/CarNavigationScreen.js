@@ -7,7 +7,7 @@ import { Polyline } from "react-native-maps";
 import { useSelector, useDispatch } from "react-redux";
 
 const CarNavigationScreen = ({ destination }) => {
-  const currentCoords = useSelector(selectCurrentCoords);
+  let currentCoords = useSelector(selectCurrentCoords);
 
   // const [destination, setDestination] = useState(null);
   const [multiPolyline, setMultiPolyline] = useState([]);
