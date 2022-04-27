@@ -19,7 +19,7 @@ import {
   getCurrentLocation,
 } from "../store/slices/mapSlice";
 
-const PickDestinationScreen = () => {
+const PickDestinationScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   // return (<MapComponent currentCoords={currentCoords} />);
@@ -50,7 +50,8 @@ const PickDestinationScreen = () => {
           paddingVertical: 10,
         }}
         onPress={() => {
-          setDestination(region);
+          // setDestination(region);
+          navigation.navigate("DisplayParkingSpacesScreen");
         }}
       />
     </View>
