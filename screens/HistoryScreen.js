@@ -81,7 +81,7 @@ const bookingHistoryData = [
 
 const HistoryScreen = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         data={bookingHistoryData}
         renderItem={({ item }) => (
@@ -93,12 +93,12 @@ const HistoryScreen = () => {
         )}
         keyExtractor={(item) => item._id}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default HistoryScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: "#fff" },
 });

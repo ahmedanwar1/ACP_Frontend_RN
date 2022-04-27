@@ -36,7 +36,7 @@ const DisplayParkingSpacesScreen = () => {
 
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
-      <MapComponent>
+      <MapComponent showGPSButton={false}>
         {parkingSpaces.length > 0 &&
           parkingSpaces.map((space) => {
             return (

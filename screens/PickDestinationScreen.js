@@ -38,7 +38,7 @@ const PickDestinationScreen = ({ navigation }) => {
         }}
       />
 
-      <MapComponent></MapComponent>
+      <MapComponent showGPSButton={true}></MapComponent>
 
       <Button
         title={"Pick a parking space".toUpperCase()}

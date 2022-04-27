@@ -18,7 +18,7 @@ import {
 } from "../store/slices/mapSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const MapComponent = ({ children }) => {
+const MapComponent = ({ children, showGPSButton = true }) => {
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords);
 
@@ -90,28 +90,30 @@ const MapComponent = ({ children }) => {
       >
         {children}
       </MapView>
-      <TouchableOpacity
-        style={{ position: "absolute", bottom: 80, right: 10 }}
-        onPress={() => {
-          ChangeRegionToCurrentLocationHandler();
-        }}
-      >
-        <Icon
-          raised
-          name="locate"
-          type="ionicon"
-          color="#000"
-          style={{
-            backgroundColor: "#fff",
-            zIndex: 8,
-            // position: "absolute",
-            // bottom: 5,
-            // justifyContent: "center",
-            // alignItems: "center",
+      {showGPSButton && (
+        <TouchableOpacity
+          style={{ position: "absolute", bottom: 80, right: 10 }}
+          onPress={() => {
+            ChangeRegionToCurrentLocationHandler();
           }}
-          size={28}
-        />
-      </TouchableOpacity>
+        >
+          <Icon
+            raised
+            name="locate"
+            type="ionicon"
+            color="#000"
+            style={{
+              backgroundColor: "#fff",
+              zIndex: 8,
+              // position: "absolute",
+              // bottom: 5,
+              // justifyContent: "center",
+              // alignItems: "center",
+            }}
+            size={28}
+          />
+        </TouchableOpacity>
+      )}
     </>
     // </View>
   );

@@ -19,7 +19,7 @@ const currentBooking = {
 
 const BookingScreen = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Bookingcard
         origin={currentBooking.origin}
         destination={currentBooking.destination}
@@ -40,7 +40,7 @@ const BookingScreen = () => {
           // Alert.alert("hi");
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    // alignItems: "center",
-    // width: "100%",
+    backgroundColor: "#fff",
   },
 });
