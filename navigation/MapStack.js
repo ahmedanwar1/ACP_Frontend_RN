@@ -16,16 +16,16 @@ import * as Location from "expo-location";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import PickDestinationScreen from "./PickDestinationScreen";
-import LocationPermissionFailedScreen from "./LocationPermissionFailedScreen";
-import GPSConditionScreen from "./GPSConditionScreen";
-import DisplayParkingSpacesScreen from "./DisplayParkingSpacesScreen";
+import PickDestinationScreen from "../screens/PickDestinationScreen";
+import LocationPermissionFailedScreen from "../screens/LocationPermissionFailedScreen";
+import GPSConditionScreen from "../screens/GPSConditionScreen";
+import DisplayParkingSpacesScreen from "../screens/DisplayParkingSpacesScreen";
 import MenuIcon from "../components/MenuIcon";
-import CarNavigationScreen from "./CarNavigationScreen";
+import CarNavigationScreen from "../screens/CarNavigationScreen";
 
 const Stack = createNativeStackNavigator();
 
-const Main = () => {
+const MapStack = () => {
   const dispatch = useDispatch();
 
   let GPSEnabled = useSelector(selectGPSEnabled);
@@ -87,10 +87,15 @@ const Main = () => {
             name="CarNavigationScreen"
             component={CarNavigationScreen}
             options={{
-              headerShown: false,
-              // title: "Navigate",
-              // headerTitleAlign: "center",
-              // headerTintColor: "#39B66A",
+              headerStyle: {
+                backgroundColor: "rgba(0,0,0,0)",
+                // marginTop:
+                //   Platform.OS === "android" ? StatusBar.currentHeight : 0,
+              },
+              // headerShown: false,
+              headerTransparent: true,
+              title: "",
+              headerLeft: () => <MenuIcon />,
             }}
           />
         </Stack.Group>
@@ -113,6 +118,6 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default MapStack;
 
 const styles = StyleSheet.create({});

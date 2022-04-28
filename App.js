@@ -24,7 +24,7 @@ import {
   selectCurrentCoords,
   selectGPSEnabled,
 } from "./store/slices/mapSlice";
-import Main from "./screens/Main";
+import MapStack from "./navigation/MapStack";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import {
@@ -54,10 +54,10 @@ export default function App() {
 
 const MyDrawer = () => {
   return (
-    <Drawer.Navigator initialRouteName="Main">
+    <Drawer.Navigator initialRouteName="MapStack">
       <Drawer.Screen
-        name="Main"
-        component={Main}
+        name="MapStack"
+        component={MapStack}
         options={{
           headerShown: false,
           // headerTintColor: "transparent",
