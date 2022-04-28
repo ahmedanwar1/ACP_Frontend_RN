@@ -10,7 +10,7 @@ import {
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Icon } from "@rneui/themed";
-
+import * as geolib from "geolib";
 import {
   checkIfLocationEnabled,
   getCurrentLocation,
@@ -18,15 +18,26 @@ import {
 } from "../store/slices/mapSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const MapComponent = ({ children, showGPSButton = true }) => {
+const MapComponent = ({ children, showGPSButton = true, parkingSpaces }) => {
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords);
 
+  let marksCenter;
+  if (parkingSpaces) {
+    marksCoords = parkingSpaces.map((space) => {
+      return {
+        latitude: space.location.coordinates[0],
+        longitude: space.location.coordinates[1],
+      };
+    });
+    marksCenter = geolib.getCenter(marksCoords);
+  }
+
   const [region, setRegion] = useState({
-    latitude: 31.227184,
-    longitude: 29.971294,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitude: parkingSpaces ? marksCenter.latitude : currentCoords.latitude,
+    longitude: parkingSpaces ? marksCenter.longitude : currentCoords.longitude,
+    latitudeDelta: parkingSpaces ? 0.02 : 0.0922,
+    longitudeDelta: parkingSpaces ? 0.01 : 0.0421,
   });
 
   let _mapView;
@@ -34,6 +45,52 @@ const MapComponent = ({ children, showGPSButton = true }) => {
   const onRegionChangeHandler = (e) => {
     setRegion(e);
   };
+
+  const onMapReadyHandler = () => {
+    // if (parkingSpaces) {
+    //   marksCoords = parkingSpaces.map((space) => {
+    //     return {
+    //       latitude: space.location.coordinates[1],
+    //       longitude: space.location.coordinates[0],
+    //     };
+    //   });
+    //   let marksCenter = geolib.getCenter(marksCoords);
+    //   _mapView.animateCamera(
+    //     {
+    //       center: marksCenter,
+    //       pitch: 0,
+    //       altitude: 5,
+    //       zoom: 30,
+    //     },
+    //     { duration: 2000 }
+    //   );
+    // }
+  };
+
+  // useEffect(() => {
+
+  // }, [parkingSpaces]);
+
+  // setTimeout(() => {
+  //   if (parkingSpaces) {
+  //     marksCoords = parkingSpaces.map((space) => {
+  //       return {
+  //         latitude: space.location.coordinates[1],
+  //         longitude: space.location.coordinates[0],
+  //       };
+  //     });
+  //     let marksCenter = geolib.getCenter(marksCoords);
+  //     _mapView.animateCamera(
+  //       {
+  //         center: marksCenter,
+  //         pitch: 0,
+  //         altitude: 5,
+  //         zoom: 30,
+  //       },
+  //       { duration: 2000 }
+  //     );
+  //   }
+  // }, 2000);
 
   const ChangeRegionToCurrentLocationHandler = () => {
     console.log(currentCoords);
@@ -82,9 +139,9 @@ const MapComponent = ({ children, showGPSButton = true }) => {
         onRegionChangeComplete={onRegionChangeHandler}
         showsUserLocation
         followUserLocation
-        // showsUserLocation={false}
         showsMyLocationButton={false}
         showsCompass={false}
+        onMapLoaded={onMapReadyHandler}
         // compassOffset={{ x: 80, y: 150 }}
         // zoomControlEnabled
       >

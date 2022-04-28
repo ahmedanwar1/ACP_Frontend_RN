@@ -21,6 +21,7 @@ import LocationPermissionFailedScreen from "./LocationPermissionFailedScreen";
 import GPSConditionScreen from "./GPSConditionScreen";
 import DisplayParkingSpacesScreen from "./DisplayParkingSpacesScreen";
 import MenuIcon from "../components/MenuIcon";
+import CarNavigationScreen from "./CarNavigationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -82,8 +83,20 @@ const Main = () => {
               headerTintColor: "#39B66A",
             }}
           />
+          <Stack.Screen
+            name="CarNavigationScreen"
+            component={CarNavigationScreen}
+            options={{
+              headerShown: false,
+              // title: "Navigate",
+              // headerTitleAlign: "center",
+              // headerTintColor: "#39B66A",
+            }}
+          />
         </Stack.Group>
       ) : (
+        // <Stack.Navigator>
+        // </Stack.Navigator>
         <View>hiiiiiiii there</View>
         // Auth screens
         // <Stack.Group screenOptions={{ headerShown: false }}>

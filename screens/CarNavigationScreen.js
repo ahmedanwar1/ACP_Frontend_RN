@@ -5,17 +5,19 @@ import { MAPBOX_ACCESS_TOKEN } from "@env";
 import MapComponent from "../components/MapComponent";
 import { Polyline } from "react-native-maps";
 import { useSelector, useDispatch } from "react-redux";
+import { selectCurrentCoords } from "../store/slices/mapSlice";
 
-const CarNavigationScreen = ({ destination }) => {
+const CarNavigationScreen = ({ route }) => {
   let currentCoords = useSelector(selectCurrentCoords);
+  const { destinationCoords } = route.params;
 
   // const [destination, setDestination] = useState(null);
   const [multiPolyline, setMultiPolyline] = useState([]);
 
   useEffect(() => {
-    if (destination) {
+    if (destinationCoords) {
       fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destination.longitude},${destination.latitude}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
       )
         .then((result) => result.json())
         .then((res) => {
