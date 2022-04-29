@@ -194,7 +194,11 @@ const MapComponent = ({
       </MapView>
       {showGPSButton && (
         <TouchableOpacity
-          style={{ position: "absolute", bottom: 80, right: 10 }}
+          style={{
+            position: "absolute",
+            bottom: carNavigation ? 20 : 80,
+            right: 10,
+          }}
           onPress={() => {
             ChangeRegionToCurrentLocationHandler();
           }}
