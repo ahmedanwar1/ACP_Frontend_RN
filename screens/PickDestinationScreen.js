@@ -25,18 +25,32 @@ const PickDestinationScreen = ({ navigation }) => {
   // return (<MapComponent currentCoords={currentCoords} />);
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
-      <Image
-        source={require("../assets/images/location-pin.png")}
+      <View
         style={{
-          width: 55,
-          height: 50,
           position: "absolute",
-          zIndex: 5,
-          top: "50%",
-          left: "50%",
-          transform: [{ translateX: -28 }, { translateY: -50 }],
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
+      >
+        <Image
+          source={require("../assets/images/location-pin.png")}
+          style={{
+            width: 55,
+            height: 50,
+            zIndex: 8,
+            // position: "absolute",
+            // zIndex: 5,
+            // top: "50%",
+            // left: "50%",
+            // transform: [{ translateX: -28 }, { translateY: -50 }],
+            transform: [{ translateY: -25.5 }],
+          }}
+        />
+      </View>
 
       <MapComponent showGPSButton={true}></MapComponent>
 
