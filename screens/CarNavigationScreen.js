@@ -9,7 +9,6 @@ import {
   setRemainingTimeToArrive,
 } from "../store/slices/mapSlice";
 import { Button } from "@rneui/themed";
-import { StackActions } from "@react-navigation/native";
 
 const CarNavigationScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -103,15 +102,6 @@ const CarNavigationScreen = ({ route, navigation }) => {
           paddingVertical: 10,
         }}
         onPress={() => {
-          // setDestination(region);
-          // navigation.dispatch(
-          //   StackActions.replace("DisplayParkedCarLocation", {
-          //     carLocation: {
-          //       longitude: destinationCoords[0],
-          //       latitude: destinationCoords[1],
-          //     },
-          //   })
-          // );
           setOpenBarrier(true);
           navigation.navigate("DisplayParkedCarLocation", {
             carLocation: {
