@@ -8,6 +8,8 @@ import {
   selectCurrentCoords,
   setRemainingTimeToArrive,
 } from "../store/slices/mapSlice";
+import { Button } from "@rneui/themed";
+import { StackActions } from "@react-navigation/native";
 
 const CarNavigationScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -17,6 +19,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
 
   //set array of directions coords for navigation
   const [multiPolyline, setMultiPolyline] = useState([]);
+  const [openBarrier, setOpenBarrier] = useState(false);
   //expected remaining time to arrive
   // const [remainingTime, setRemainingTime] = useState(null);
 
@@ -31,7 +34,8 @@ const CarNavigationScreen = ({ route, navigation }) => {
 
   //fetch directions from MABOX DIRECTIONS API whenever users location changes
   useEffect(() => {
-    if (destinationCoords) {
+    if (destinationCoords && !openBarrier) {
+      console.log();
       fetch(
         `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
       )
@@ -89,6 +93,34 @@ const CarNavigationScreen = ({ route, navigation }) => {
           />
         )}
       </MapComponent>
+      <Button
+        title={"Unlock parking barrier".toUpperCase()}
+        buttonStyle={{
+          backgroundColor: "#39B66A",
+          marginBottom: 20,
+          marginHorizontal: 20,
+          borderRadius: 10,
+          paddingVertical: 10,
+        }}
+        onPress={() => {
+          // setDestination(region);
+          // navigation.dispatch(
+          //   StackActions.replace("DisplayParkedCarLocation", {
+          //     carLocation: {
+          //       longitude: destinationCoords[0],
+          //       latitude: destinationCoords[1],
+          //     },
+          //   })
+          // );
+          setOpenBarrier(true);
+          navigation.navigate("DisplayParkedCarLocation", {
+            carLocation: {
+              longitude: destinationCoords[1],
+              latitude: destinationCoords[0],
+            },
+          });
+        }}
+      />
     </View>
   );
 };

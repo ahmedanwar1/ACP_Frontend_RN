@@ -75,6 +75,9 @@ export const mapSlice = createSlice({
     setRemainingTimeToArrive: (state, { payload }) => {
       state.remainingTimeToArrive = payload;
     },
+    setUserState: (state, { payload }) => {
+      state.userState = payload;
+    },
   },
   extraReducers: {
     [checkIfLocationEnabled.rejected]: (state, { payload }) => {

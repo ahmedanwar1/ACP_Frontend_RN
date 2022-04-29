@@ -15,6 +15,7 @@ const MapComponent = ({
   showGPSButton = true,
   parkingSpaces,
   carNavigation,
+  parkedCarLocation,
 }) => {
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords); //get current coords of user
@@ -120,15 +121,12 @@ const MapComponent = ({
   ];
 
   //go to the users location on map when user clicks on gps button.
-  const ChangeRegionToCurrentLocationHandler = () => {
+  const ChangeRegionToCurrentLocationHandler = (coords) => {
     console.log(currentCoords);
     if (currentCoords) {
       _mapView.animateCamera(
         {
-          center: {
-            latitude: currentCoords.latitude,
-            longitude: currentCoords.longitude,
-          },
+          center: coords,
           pitch: 0,
           altitude: 5,
           zoom: 15,
@@ -196,16 +194,40 @@ const MapComponent = ({
         <TouchableOpacity
           style={{
             position: "absolute",
-            bottom: carNavigation ? 20 : 80,
+            bottom: parkedCarLocation ? 20 : 80,
             right: 10,
           }}
           onPress={() => {
-            ChangeRegionToCurrentLocationHandler();
+            ChangeRegionToCurrentLocationHandler(currentCoords);
           }}
         >
           <Icon
             raised
             name="locate"
+            type="ionicon"
+            color="#000"
+            style={{
+              backgroundColor: "#fff",
+              zIndex: 8,
+            }}
+            size={28}
+          />
+        </TouchableOpacity>
+      )}
+      {parkedCarLocation && (
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            bottom: 100,
+            right: 10,
+          }}
+          onPress={() => {
+            ChangeRegionToCurrentLocationHandler(parkedCarLocation);
+          }}
+        >
+          <Icon
+            raised
+            name="car"
             type="ionicon"
             color="#000"
             style={{
