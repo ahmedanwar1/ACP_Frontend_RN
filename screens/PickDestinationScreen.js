@@ -1,28 +1,9 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button } from "@rneui/themed";
-
-import * as Location from "expo-location";
-import { SafeAreaView } from "react-native-safe-area-context";
 import MapComponent from "../components/MapComponent";
 
-// import GPSConditionScreen from "../components/GPSConditionScreen";
-// import LocationPermissionFailedScreen from "../components/LocationPermissionFailedScreen";
-
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setGPSEnabled,
-  setCurrentCoords,
-  selectCurrentCoords,
-  selectGPSEnabled,
-  checkIfLocationEnabled,
-  getCurrentLocation,
-} from "../store/slices/mapSlice";
-
 const PickDestinationScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-
-  // return (<MapComponent currentCoords={currentCoords} />);
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
       <View
@@ -42,11 +23,6 @@ const PickDestinationScreen = ({ navigation }) => {
             width: 55,
             height: 50,
             zIndex: 8,
-            // position: "absolute",
-            // zIndex: 5,
-            // top: "50%",
-            // left: "50%",
-            // transform: [{ translateX: -28 }, { translateY: -50 }],
             transform: [{ translateY: -25.5 }],
           }}
         />

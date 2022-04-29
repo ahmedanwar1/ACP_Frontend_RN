@@ -15,11 +15,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@rneui/themed";
 import { selectCurrentCoords } from "../store/slices/mapSlice";
 import BookingCard from "../components/BookingCard";
-/*
-https://api.mapbox.com/directions-matrix/v1/mapbox/driving/29.971752,31.227164;30.060701,31.308337?sources=0&destinations=1&access_token=pk.....
-*/
+
 const DisplayParkingSpacesScreen = ({ navigation }) => {
-  let currentCoords = useSelector(selectCurrentCoords);
+  let currentCoords = useSelector(selectCurrentCoords); //users current location
 
   const [parkingSpaces, setParkingSpaces] = useState([
     {
@@ -47,38 +45,39 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
       price: 15,
     },
   ]);
+  const [selectedSpace, setSelectedSpace] = useState(null); //the space that was picked (clicked) by user
+  const [spaceDetails, setSpaceDetails] = useState(null); //the fetched details of the selected space
 
-  const [selectedSpace, setSelectedSpace] = useState(null);
-  const [spaceDetails, setSpaceDetails] = useState(null);
-
+  //open bottom sheet when selecting a space
   const SelectSpaceHandler = (space) => {
     setSelectedSpace(space);
     bottomSheetRef.current?.snapToIndex(0);
     console.log(space._id);
   };
 
-  const bottomSheetRef = useRef(null);
+  const bottomSheetRef = useRef(null); //bottom sheet ref
 
-  // variables
-  // const snapPoints = useMemo(() => ["60%"], []);
   const snapPoints = ["60%"];
 
   // callbacks
   const handleSheetChanges = useCallback((index = 0) => {
     console.log("handleSheetChanges", index);
-    // setSelectedSpace(space);
-    // bottomSheetRef.current?.snapToIndex(index);
   }, []);
 
+  //calculate the expected arrival date
   const calculateArrivalDate = (sec) => {
     let timeObject = new Date();
     timeObject = new Date(timeObject.getTime() + sec * 1000);
-    // console.log(timeObject.toLocaleString());
-    // return timeObject.toLocaleString();
-    return `${timeObject.getDate()}/${
-      timeObject.getMonth() + 1
-    }/${timeObject.getFullYear()} ${timeObject.getMonth()}:${timeObject.getHours()}:${timeObject.getSeconds()}`;
+    return timeObject;
   };
+
+  //convert date into (dd/mm/yyyy h:i:s) format
+  const convertDateToFormat = (date) => {
+    return `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()} ${date.getMonth()}:${date.getHours()}:${date.getSeconds()}`;
+  };
+
   //fetch parking spaces (recieve destination, time, date .... )
   useEffect(() => {}, []);
 
@@ -133,17 +132,13 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
-          style={{
-            flex: 1,
-            // justifyContent: "space-between",
-          }}
+          style={{ flex: 1 }}
         >
           <View style={{ flex: 1, justifyContent: "space-between" }}>
             <View
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                // paddingBottom: 20,
               }}
             >
               <Text style={{ fontSize: 20, color: "#39B66A" }}>
@@ -158,33 +153,27 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
                   alignItems: "center",
                 }}
               >
-                {/* <Text>Awesome 🎉 {selectedSpace._id}</Text> */}
                 <Text
                   style={{
                     fontSize: 17,
                     color: "#000",
-
                     fontWeight: "bold",
                   }}
                 >
                   Expected Travel Time:{" "}
                   {Math.floor(spaceDetails.durations[0][0] / 60)} mins
                 </Text>
-                {/* <Text>Source: {spaceDetails.sources[0].name || "Unknown"}</Text>
-                <Text>
-                  Destination: {spaceDetails.destinations[0].name || "Unknown"}
-                </Text> */}
                 <BookingCard
                   origin={{
                     name: spaceDetails.sources[0].name || "Unknown",
-                    date: `${new Date().getDate()}/${
-                      new Date().getMonth() + 1
-                    }/${new Date().getFullYear()} ${new Date().getMonth()}:${new Date().getHours()}:${new Date().getSeconds()}`,
+                    date: `${convertDateToFormat(new Date())}`,
                   }}
                   destination={{
                     name: spaceDetails.destinations[0].name || "Unknown",
                     // date: new Date().format("m-d-Y h:i:s"),
-                    date: calculateArrivalDate(spaceDetails.durations[0][0]),
+                    date: `${convertDateToFormat(
+                      calculateArrivalDate(spaceDetails.durations[0][0])
+                    )}`,
                   }}
                   price={selectedSpace.price}
                 />

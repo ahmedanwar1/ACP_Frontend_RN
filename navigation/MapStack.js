@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Platform, StatusBar } from "react-native";
 import React, { useEffect, useState } from "react";
-
 import { useSelector, useDispatch } from "react-redux";
 import {
   setGPSEnabled,
@@ -10,10 +9,6 @@ import {
   checkIfLocationEnabled,
   getCurrentLocation,
 } from "../store/slices/mapSlice";
-
-import * as Location from "expo-location";
-
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import PickDestinationScreen from "../screens/PickDestinationScreen";
@@ -45,13 +40,15 @@ const MapStack = () => {
     return () => clearInterval(checkGPS);
   }, [GPSEnabled]);
 
+  //if GPS is not on
   if (!GPSEnabled) {
     return <GPSConditionScreen />;
   }
+
+  //if there is no coords (permission)
   if (!currentCoords) {
     return <LocationPermissionFailedScreen />;
   }
-  // return <PickDestinationScreen />;
 
   return (
     <Stack.Navigator>
@@ -100,20 +97,8 @@ const MapStack = () => {
           />
         </Stack.Group>
       ) : (
-        // <Stack.Navigator>
-        // </Stack.Navigator>
-        <View>hiiiiiiii there</View>
-        // Auth screens
-        // <Stack.Group screenOptions={{ headerShown: false }}>
-        //   <Stack.Screen name="SignIn" component={SignIn} />
-        //   <Stack.Screen name="SignUp" component={SignUp} />
-        // </Stack.Group>
+        <View>tessst</View>
       )}
-      {/* Common modal screens */}
-      {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Help" component={Help} />
-        <Stack.Screen name="Invite" component={Invite} />
-      </Stack.Group> */}
     </Stack.Navigator>
   );
 };

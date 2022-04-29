@@ -8,6 +8,7 @@ const initialState = {
   foregroundSubscription: null,
 };
 
+//check GPS is on or off
 export const checkIfLocationEnabled = createAsyncThunk(
   "map/checkIfLocationEnabled",
   async (_, { dispatch }) => {
@@ -25,6 +26,7 @@ export const checkIfLocationEnabled = createAsyncThunk(
   }
 );
 
+//get and watch user's current coords
 export const getCurrentLocation = createAsyncThunk(
   "map/getCurrentLocation",
   async (_, { dispatch, getState }) => {

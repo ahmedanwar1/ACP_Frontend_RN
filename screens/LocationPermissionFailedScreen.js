@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 const LocationPermissionFailedScreen = () => {
   const dispatch = useDispatch();
 
+  //check location permission
   let checkGPS;
   useEffect(() => {
     checkPermission = async () => {

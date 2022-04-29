@@ -1,7 +1,6 @@
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Bookingcard from "../components/BookingCard";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/themed";
 
 const currentBooking = {

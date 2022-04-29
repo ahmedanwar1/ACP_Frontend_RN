@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-
+import { StyleSheet, Text, View } from "react-native";
 import { MAPBOX_ACCESS_TOKEN } from "@env";
 import MapComponent from "../components/MapComponent";
 import { Polyline } from "react-native-maps";
@@ -8,10 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentCoords } from "../store/slices/mapSlice";
 
 const CarNavigationScreen = ({ route, navigation }) => {
-  let currentCoords = useSelector(selectCurrentCoords);
-  const { destinationCoords } = route.params;
+  let currentCoords = useSelector(selectCurrentCoords); //get user's current coords
+  const { destinationCoords } = route.params; //get destination of the user
 
-  // const [destination, setDestination] = useState(null);
+  //set array of directions coords for navigation
   const [multiPolyline, setMultiPolyline] = useState([]);
 
   useEffect(
@@ -19,26 +18,11 @@ const CarNavigationScreen = ({ route, navigation }) => {
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
-
-        // // Prompt the user before leaving the screen
-        // Alert.alert(
-        //   'Discard changes?',
-        //   'You have unsaved changes. Are you sure to discard them and leave the screen?',
-        //   [
-        //     { text: "Don't leave", style: 'cancel', onPress: () => {} },
-        //     {
-        //       text: 'Discard',
-        //       style: 'destructive',
-        //       // If the user confirmed, then we dispatch the action we blocked earlier
-        //       // This will continue the action that had triggered the removal of the screen
-        //       onPress: () => navigation.dispatch(e.data.action),
-        //     },
-        //   ]
-        // );
       }),
     [navigation]
   );
 
+  //fetch directions from MABOX DIRECTIONS API whenever users location changes
   useEffect(() => {
     if (destinationCoords) {
       fetch(
@@ -49,7 +33,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
           console.log(res);
           const coordinates = res.routes[0].geometry.coordinates;
           const updatedCoordinates = [];
-          // multiPolyline = [];
+          //construct the recieved polylines (direction) array
           for (let i = 0; i < coordinates.length; i++) {
             updatedCoordinates.push({
               latitude: coordinates[i][1],
