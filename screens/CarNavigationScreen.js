@@ -48,7 +48,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
-      <MapComponent>
+      <MapComponent carNavigation={true}>
         {multiPolyline && (
           <Polyline
             coordinates={multiPolyline}

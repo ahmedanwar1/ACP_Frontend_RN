@@ -10,7 +10,12 @@ import {
 } from "../store/slices/mapSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const MapComponent = ({ children, showGPSButton = true, parkingSpaces }) => {
+const MapComponent = ({
+  children,
+  showGPSButton = true,
+  parkingSpaces,
+  carNavigation,
+}) => {
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords); //get current coords of user
 
@@ -133,6 +138,24 @@ const MapComponent = ({ children, showGPSButton = true, parkingSpaces }) => {
     }
   };
 
+  const onUserLocationChangeHandler = () => {
+    console.log("location changed");
+    if (carNavigation) {
+      _mapView.animateCamera(
+        {
+          center: {
+            latitude: currentCoords.latitude,
+            longitude: currentCoords.longitude,
+          },
+          pitch: 5,
+          altitude: 15,
+          zoom: 18,
+        },
+        { duration: 500 }
+      );
+    }
+  };
+
   //check GPS and permissions when map init.
   useEffect(() => {
     (async () => {
@@ -157,6 +180,7 @@ const MapComponent = ({ children, showGPSButton = true, parkingSpaces }) => {
           bottom: 0,
         }}
         initialRegion={region}
+        // region={region}
         userInterfaceStyle="dark"
         // onRegionChange={onRegionChangeHandler}
         onRegionChangeComplete={onRegionChangeHandler}
@@ -164,6 +188,7 @@ const MapComponent = ({ children, showGPSButton = true, parkingSpaces }) => {
         followUserLocation
         showsMyLocationButton={false}
         showsCompass={false}
+        onUserLocationChange={onUserLocationChangeHandler}
       >
         {children}
       </MapView>
