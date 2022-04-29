@@ -8,6 +8,7 @@ import {
   selectGPSEnabled,
   checkIfLocationEnabled,
   getCurrentLocation,
+  selectRemainingTimeToArrive,
 } from "../store/slices/mapSlice";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -17,14 +18,18 @@ import GPSConditionScreen from "../screens/GPSConditionScreen";
 import DisplayParkingSpacesScreen from "../screens/DisplayParkingSpacesScreen";
 import MenuIcon from "../components/MenuIcon";
 import CarNavigationScreen from "../screens/CarNavigationScreen";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { Icon } from "@rneui/themed";
 
 const Stack = createNativeStackNavigator();
 
 const MapStack = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
 
   let GPSEnabled = useSelector(selectGPSEnabled);
   let currentCoords = useSelector(selectCurrentCoords);
+  let remainingTimeToArrive = useSelector(selectRemainingTimeToArrive);
 
   //tesssssssssst (remove it)
   const userIsApprochingSpace = false;
@@ -85,14 +90,30 @@ const MapStack = () => {
             component={CarNavigationScreen}
             options={{
               headerStyle: {
-                backgroundColor: "rgba(0,0,0,0)",
+                // backgroundColor: "rgba(0,0,0,0)",
+                backgroundColor: "#39B66A",
                 // marginTop:
                 //   Platform.OS === "android" ? StatusBar.currentHeight : 0,
               },
               // headerShown: false,
-              headerTransparent: true,
-              title: "",
-              headerLeft: () => <MenuIcon />,
+              // headerTransparent: true,
+              headerTitleAlign: "center",
+              title: `Arrive in ${remainingTimeToArrive} mins`,
+              headerTintColor: "#fff",
+              // headerLeft: () => <MenuIcon />,
+              headerLeft: () => (
+                <Icon
+                  // raised
+                  name="bars"
+                  type="font-awesome-5"
+                  color="#fff"
+                  style={{ paddingLeft: 2 }}
+                  size={22}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.openDrawer())
+                  }
+                />
+              ),
             }}
           />
         </Stack.Group>

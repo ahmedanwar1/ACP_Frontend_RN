@@ -4,14 +4,21 @@ import { MAPBOX_ACCESS_TOKEN } from "@env";
 import MapComponent from "../components/MapComponent";
 import { Polyline } from "react-native-maps";
 import { useSelector, useDispatch } from "react-redux";
-import { selectCurrentCoords } from "../store/slices/mapSlice";
+import {
+  selectCurrentCoords,
+  setRemainingTimeToArrive,
+} from "../store/slices/mapSlice";
 
 const CarNavigationScreen = ({ route, navigation }) => {
+  const dispatch = useDispatch();
+
   let currentCoords = useSelector(selectCurrentCoords); //get user's current coords
   const { destinationCoords } = route.params; //get destination of the user
 
   //set array of directions coords for navigation
   const [multiPolyline, setMultiPolyline] = useState([]);
+  //expected remaining time to arrive
+  // const [remainingTime, setRemainingTime] = useState(null);
 
   useEffect(
     () =>
@@ -32,6 +39,9 @@ const CarNavigationScreen = ({ route, navigation }) => {
         .then((res) => {
           console.log(res);
           const coordinates = res.routes[0].geometry.coordinates;
+          dispatch(
+            setRemainingTimeToArrive(Math.ceil(res.routes[0].duration / 60))
+          );
           const updatedCoordinates = [];
           //construct the recieved polylines (direction) array
           for (let i = 0; i < coordinates.length; i++) {
@@ -48,6 +58,20 @@ const CarNavigationScreen = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 8,
+          backgroundColor: "#39B66A",
+        }}
+      >
+        {/* <Text style={{ color: "#fff", fontWeight: "500" }}>
+          Arrive in {remainingTime} mins
+        </Text> */}
+      </View>
       <MapComponent carNavigation={true}>
         {multiPolyline && (
           <Polyline

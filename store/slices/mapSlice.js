@@ -6,6 +6,7 @@ const initialState = {
   currentCoords: null,
   GPSEnabled: false,
   foregroundSubscription: null,
+  remainingTimeToArrive: 0,
 };
 
 //check GPS is on or off
@@ -71,6 +72,9 @@ export const mapSlice = createSlice({
     setForegroundSubscription: (state, { payload }) => {
       state.foregroundSubscription = payload;
     },
+    setRemainingTimeToArrive: (state, { payload }) => {
+      state.remainingTimeToArrive = payload;
+    },
   },
   extraReducers: {
     [checkIfLocationEnabled.rejected]: (state, { payload }) => {
@@ -83,9 +87,12 @@ export const mapSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setCurrentCoords, setGPSEnabled } = mapSlice.actions;
+export const { setCurrentCoords, setGPSEnabled, setRemainingTimeToArrive } =
+  mapSlice.actions;
 
 export const selectCurrentCoords = (state) => state.map.currentCoords;
 export const selectGPSEnabled = (state) => state.map.GPSEnabled;
+export const selectRemainingTimeToArrive = (state) =>
+  state.map.remainingTimeToArrive;
 
 export default mapSlice.reducer;
