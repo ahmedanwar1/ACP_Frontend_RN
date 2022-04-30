@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Icon } from "@rneui/themed";
 import Dash from "react-native-dash";
 
-const Bookingcard = ({ origin, destination, price }) => {
+const Bookingcard = ({ origin, destination, price, travelTime }) => {
   return (
     <View style={styles.card}>
       <View style={styles.leftSide}>
@@ -54,6 +54,45 @@ const Bookingcard = ({ origin, destination, price }) => {
       </View>
       <View style={styles.verticalDivider}></View>
       <View style={styles.rightSide}>
+        {travelTime && (
+          <>
+            <View style={styles.info}>
+              <Icon
+                // raised
+                name="clock"
+                type="font-awesome-5"
+                color="#fff"
+                style={{
+                  ...styles.icons,
+                  width: 25,
+                  height: 25,
+                  backgroundColor: "orange",
+                }}
+                size={13}
+              />
+              <Text style={{ ...styles.secondaryText, ...styles.details }}>
+                Travel time
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <View style={styles.rightDetails}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    color: "#000",
+                    fontSize: 25,
+                    paddingRight: 5,
+                  }}
+                >
+                  {travelTime}
+                </Text>
+                <Text style={styles.secondaryText}>mins</Text>
+              </View>
+            </View>
+
+            <View style={styles.horizontalDivider}></View>
+          </>
+        )}
         <View style={styles.info}>
           <Icon
             // raised
@@ -62,8 +101,8 @@ const Bookingcard = ({ origin, destination, price }) => {
             color="#fff"
             style={{
               ...styles.icons,
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
               backgroundColor: "#F98A8A",
             }}
             size={13}
@@ -73,12 +112,12 @@ const Bookingcard = ({ origin, destination, price }) => {
           </Text>
         </View>
         <View style={styles.details}>
-          <View style={styles.priceDetails}>
+          <View style={styles.rightDetails}>
             <Text
               style={{
                 fontWeight: "bold",
                 color: "#000",
-                fontSize: 30,
+                fontSize: 25,
                 paddingRight: 5,
               }}
             >
@@ -151,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ddd",
     marginLeft: 20,
   },
-  priceDetails: {
+  rightDetails: {
     flexDirection: "row",
     alignItems: "center",
   },
@@ -161,6 +200,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 20,
   },
+  horizontalDivider: { height: 1, backgroundColor: "#ddd", marginVertical: 2 },
 });
 
 export default Bookingcard;

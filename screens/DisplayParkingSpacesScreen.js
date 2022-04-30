@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
+import date from "date-and-time";
 
 import { MAPBOX_ACCESS_TOKEN } from "@env";
 import MapComponent from "../components/MapComponent";
@@ -69,19 +70,19 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
     console.log("handleSheetChanges", index);
   }, []);
 
-  //calculate the expected arrival date
-  const calculateArrivalDate = (sec) => {
-    let timeObject = new Date();
-    timeObject = new Date(timeObject.getTime() + sec * 1000);
-    return timeObject;
-  };
+  // //calculate the expected arrival date
+  // const calculateArrivalDate = (sec) => {
+  //   let timeObject = new Date();
+  //   timeObject = new Date(timeObject.getTime() + sec * 1000);
+  //   return timeObject;
+  // };
 
-  //convert date into (dd/mm/yyyy h:i:s) format
-  const convertDateToFormat = (date) => {
-    return `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()} ${date.getMonth()}:${date.getHours()}:${date.getSeconds()}`;
-  };
+  // //convert date into (dd/mm/yyyy h:i:s) format
+  // const convertDateToFormat = (date) => {
+  //   return `${date.getDate()}/${
+  //     date.getMonth() + 1
+  //   }/${date.getFullYear()} ${date.getMonth()}:${date.getHours()}:${date.getSeconds()}`;
+  // };
 
   //fetch parking spaces (recieve destination, time, date .... )
   useEffect(() => {}, []);
@@ -163,7 +164,7 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
                   alignItems: "center",
                 }}
               >
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 17,
                     color: "#000",
@@ -172,20 +173,22 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
                 >
                   Expected Travel Time:{" "}
                   {Math.floor(spaceDetails.durations[0][0] / 60)} mins
-                </Text>
+                </Text> */}
                 <BookingCard
                   origin={{
                     name: spaceDetails.sources[0].name || "Unknown",
-                    date: `${convertDateToFormat(new Date())}`,
+                    date: `${date.format(new Date(), "MMM DD, hh:mm A")}`,
                   }}
                   destination={{
                     name: spaceDetails.destinations[0].name || "Unknown",
                     // date: new Date().format("m-d-Y h:i:s"),
-                    date: `${convertDateToFormat(
-                      calculateArrivalDate(spaceDetails.durations[0][0])
+                    date: `${date.format(
+                      date.addSeconds(new Date(), spaceDetails.durations[0][0]),
+                      "MMM DD, hh:mm A"
                     )}`,
                   }}
                   price={selectedSpace.price}
+                  travelTime={Math.floor(spaceDetails.durations[0][0] / 60)}
                 />
               </View>
             )}
