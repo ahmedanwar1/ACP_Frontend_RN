@@ -9,6 +9,8 @@ import {
   checkIfLocationEnabled,
   getCurrentLocation,
   selectRemainingTimeToArrive,
+  selectDestinationCoords,
+  selectParkedCarLocation,
 } from "../store/slices/mapSlice";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -23,7 +25,7 @@ import { Icon } from "@rneui/themed";
 import DisplayParkedCarLocation from "../screens/DisplayParkedCarLocation";
 
 const Stack = createNativeStackNavigator();
-const CarLocationStack = createNativeStackNavigator();
+// const CarLocationStack = createNativeStackNavigator();
 
 const MapStack = () => {
   const navigation = useNavigation();
@@ -34,8 +36,8 @@ const MapStack = () => {
   let remainingTimeToArrive = useSelector(selectRemainingTimeToArrive);
 
   //tesssssssssst (remove it)
-  const userIsApprochingSpace = false;
-  const carIsParked = false;
+  const navigatingUser = useSelector(selectDestinationCoords);
+  const carIsParked = useSelector(selectParkedCarLocation);
 
   //check frequently that GPS is enabled
   let checkGPS;
@@ -57,101 +59,101 @@ const MapStack = () => {
     return <LocationPermissionFailedScreen />;
   }
 
-  return (
-    <Stack.Navigator>
-      {/* {!carIsParked && !userIsApprochingSpace ? ( */}
-      {/* // Screens for logged in users */}
-      <Stack.Group>
-        <Stack.Screen
-          name="PickDestinationScreen"
-          component={PickDestinationScreen}
-          // options={{ headerShown: false }}
-          options={{
-            headerStyle: {
-              backgroundColor: "rgba(0,0,0,0)",
-              // marginTop:
-              //   Platform.OS === "android" ? StatusBar.currentHeight : 0,
-            },
-            // headerShown: false,
-            headerTransparent: true,
-            title: "",
-            headerLeft: () => <MenuIcon />,
-          }}
-        />
-        <Stack.Screen
-          name="DisplayParkingSpacesScreen"
-          component={DisplayParkingSpacesScreen}
-          options={{
-            title: "PICK YOUR SPACE",
-            headerTitleAlign: "center",
-            headerTintColor: "#39B66A",
-          }}
-        />
-      </Stack.Group>
-      <Stack.Group>
-        <Stack.Screen
-          name="CarNavigationScreen"
-          component={CarNavigationScreen}
-          options={{
-            headerStyle: {
-              // backgroundColor: "rgba(0,0,0,0)",
-              backgroundColor: "#39B66A",
-              // marginTop:
-              //   Platform.OS === "android" ? StatusBar.currentHeight : 0,
-            },
-            // headerShown: false,
-            // headerTransparent: true,
-            headerTitleAlign: "center",
-            title: `Arrive in ${remainingTimeToArrive} mins`,
-            headerTintColor: "#fff",
-            // headerLeft: () => <MenuIcon />,
-            headerLeft: () => (
-              <Icon
-                // raised
-                name="bars"
-                type="font-awesome-5"
-                color="#fff"
-                style={{ paddingLeft: 2 }}
-                size={22}
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              />
-            ),
-          }}
-        />
+  if (!carIsParked && !navigatingUser) {
+    return (
+      <Stack.Navigator>
+        <Stack.Group>
+          <Stack.Screen
+            name="PickDestinationScreen"
+            component={PickDestinationScreen}
+            options={{
+              headerStyle: {
+                backgroundColor: "rgba(0,0,0,0)",
+              },
+              headerTransparent: true,
+              title: "",
+              headerLeft: () => <MenuIcon />,
+            }}
+          />
+          <Stack.Screen
+            name="DisplayParkingSpacesScreen"
+            component={DisplayParkingSpacesScreen}
+            options={{
+              title: "PICK YOUR SPACE",
+              headerTitleAlign: "center",
+              headerTintColor: "#39B66A",
+            }}
+          />
+        </Stack.Group>
+      </Stack.Navigator>
+    );
+  }
 
-        <Stack.Screen
-          name="DisplayParkedCarLocation"
-          component={DisplayParkedCarLocation}
-          options={{
-            headerStyle: {
-              backgroundColor: "#39B66A",
-            },
-            // headerShown: false,
-            // headerTransparent: true,
-            headerTitleAlign: "center",
-            title: `Remaining time: 50 mins`,
-            headerTintColor: "#fff",
-            // headerLeft: () => <MenuIcon />,
-            headerLeft: () => (
-              <Icon
-                // raised
-                name="bars"
-                type="font-awesome-5"
-                color="#fff"
-                style={{ paddingLeft: 2 }}
-                size={22}
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              />
-            ),
-          }}
-        />
-      </Stack.Group>
+  if (navigatingUser && !carIsParked) {
+    return (
+      <Stack.Navigator>
+        <Stack.Group>
+          <Stack.Screen
+            name="CarNavigationScreen"
+            component={CarNavigationScreen}
+            options={{
+              headerStyle: {
+                backgroundColor: "#39B66A",
+              },
+              headerTitleAlign: "center",
+              title: `Arrive in ${remainingTimeToArrive} mins`,
+              headerTintColor: "#fff",
+              headerLeft: () => (
+                <Icon
+                  name="bars"
+                  type="font-awesome-5"
+                  color="#fff"
+                  style={{ paddingLeft: 2 }}
+                  size={22}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.openDrawer())
+                  }
+                />
+              ),
+            }}
+          />
+        </Stack.Group>
+      </Stack.Navigator>
+    );
+  }
 
-      {/* ) : ( */}
-      {/* <View>tessst</View> */}
-      {/* )} */}
-    </Stack.Navigator>
-  );
+  if (/*!navigatingUser &&*/ carIsParked) {
+    return (
+      <Stack.Navigator>
+        <Stack.Group>
+          <Stack.Screen
+            name="DisplayParkedCarLocation"
+            component={DisplayParkedCarLocation}
+            options={{
+              headerStyle: {
+                backgroundColor: "#39B66A",
+              },
+              headerTitleAlign: "center",
+              title: `Remaining time: 50 mins`,
+              headerTintColor: "#fff",
+              headerLeft: () => (
+                <Icon
+                  name="bars"
+                  type="font-awesome-5"
+                  color="#fff"
+                  style={{ paddingLeft: 2 }}
+                  size={22}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.openDrawer())
+                  }
+                />
+              ),
+            }}
+          />
+        </Stack.Group>
+      </Stack.Navigator>
+    );
+  }
 };
 
 export default MapStack;

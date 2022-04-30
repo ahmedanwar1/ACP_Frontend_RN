@@ -7,6 +7,8 @@ const initialState = {
   GPSEnabled: false,
   foregroundSubscription: null,
   remainingTimeToArrive: 0,
+  destinationCoords: null,
+  parkedCarLocation: null,
 };
 
 //check GPS is on or off
@@ -75,8 +77,11 @@ export const mapSlice = createSlice({
     setRemainingTimeToArrive: (state, { payload }) => {
       state.remainingTimeToArrive = payload;
     },
-    setUserState: (state, { payload }) => {
-      state.userState = payload;
+    setDestinationCoords: (state, { payload }) => {
+      state.destinationCoords = payload;
+    },
+    setParkedCarLocation: (state, { payload }) => {
+      state.parkedCarLocation = payload;
     },
   },
   extraReducers: {
@@ -90,12 +95,19 @@ export const mapSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setCurrentCoords, setGPSEnabled, setRemainingTimeToArrive } =
-  mapSlice.actions;
+export const {
+  setCurrentCoords,
+  setGPSEnabled,
+  setRemainingTimeToArrive,
+  setDestinationCoords,
+  setParkedCarLocation,
+} = mapSlice.actions;
 
 export const selectCurrentCoords = (state) => state.map.currentCoords;
 export const selectGPSEnabled = (state) => state.map.GPSEnabled;
 export const selectRemainingTimeToArrive = (state) =>
   state.map.remainingTimeToArrive;
+export const selectDestinationCoords = (state) => state.map.destinationCoords;
+export const selectParkedCarLocation = (state) => state.map.parkedCarLocation;
 
 export default mapSlice.reducer;

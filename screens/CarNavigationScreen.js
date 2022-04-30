@@ -6,19 +6,23 @@ import { Polyline } from "react-native-maps";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectCurrentCoords,
+  selectDestinationCoords,
+  setParkedCarLocation,
   setRemainingTimeToArrive,
 } from "../store/slices/mapSlice";
 import { Button } from "@rneui/themed";
+import AbortController from "abort-controller";
 
 const CarNavigationScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   let currentCoords = useSelector(selectCurrentCoords); //get user's current coords
-  const { destinationCoords } = route.params; //get destination of the user
+  // const { destinationCoords } = route.params; //get destination of the user
+  const destinationCoords = useSelector(selectDestinationCoords);
 
   //set array of directions coords for navigation
   const [multiPolyline, setMultiPolyline] = useState([]);
-  const [openBarrier, setOpenBarrier] = useState(false);
+  // const [openBarrier, setOpenBarrier] = useState(false);
   //expected remaining time to arrive
   // const [remainingTime, setRemainingTime] = useState(null);
 
@@ -33,30 +37,40 @@ const CarNavigationScreen = ({ route, navigation }) => {
 
   //fetch directions from MABOX DIRECTIONS API whenever users location changes
   useEffect(() => {
-    if (destinationCoords && !openBarrier) {
-      console.log();
-      fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
-      )
-        .then((result) => result.json())
-        .then((res) => {
-          console.log(res);
-          const coordinates = res.routes[0].geometry.coordinates;
-          dispatch(
-            setRemainingTimeToArrive(Math.ceil(res.routes[0].duration / 60))
-          );
-          const updatedCoordinates = [];
-          //construct the recieved polylines (direction) array
-          for (let i = 0; i < coordinates.length; i++) {
-            updatedCoordinates.push({
-              latitude: coordinates[i][1],
-              longitude: coordinates[i][0],
-            });
+    const abortController = new AbortController();
+    try {
+      if (destinationCoords) {
+        console.log();
+        fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
+          {
+            signal: abortController.signal,
           }
-          setMultiPolyline(updatedCoordinates);
-          console.log(multiPolyline);
-        });
+        )
+          .then((result) => result.json())
+          .then((res) => {
+            console.log(res);
+            const coordinates = res.routes[0].geometry.coordinates;
+            dispatch(
+              setRemainingTimeToArrive(Math.ceil(res.routes[0].duration / 60))
+            );
+            const updatedCoordinates = [];
+            //construct the recieved polylines (direction) array
+            for (let i = 0; i < coordinates.length; i++) {
+              updatedCoordinates.push({
+                latitude: coordinates[i][1],
+                longitude: coordinates[i][0],
+              });
+            }
+            setMultiPolyline(updatedCoordinates);
+            console.log(multiPolyline);
+          })
+          .catch((e) => console.log(e));
+      }
+    } catch (error) {
+      console.log(error);
     }
+    return () => abortController.abort();
   }, [currentCoords]);
 
   return (
@@ -102,13 +116,19 @@ const CarNavigationScreen = ({ route, navigation }) => {
           paddingVertical: 10,
         }}
         onPress={() => {
-          setOpenBarrier(true);
-          navigation.navigate("DisplayParkedCarLocation", {
-            carLocation: {
+          // setOpenBarrier(true);
+          // navigation.navigate("DisplayParkedCarLocation", {
+          //   carLocation: {
+          //     longitude: destinationCoords[1],
+          //     latitude: destinationCoords[0],
+          //   },
+          // });
+          dispatch(
+            setParkedCarLocation({
               longitude: destinationCoords[1],
               latitude: destinationCoords[0],
-            },
-          });
+            })
+          );
         }}
       />
     </View>

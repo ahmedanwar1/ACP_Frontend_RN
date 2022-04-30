@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^1.8.1",
     "@rneui/base": "^4.0.0-rc.1",
     "@rneui/themed": "^4.0.0-rc.1",
+    "axios": "^0.27.2",
     "expo": "~44.0.0",
     "expo-font": "~10.0.4",
     "expo-location": "~14.0.1",

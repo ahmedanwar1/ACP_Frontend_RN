@@ -23,7 +23,18 @@ const LocationPermissionFailedScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        // position: "absolute",
+        // top: 0,
+        // left: 0,
+        // right: 0,
+        // bottom: 0,
+        // zIndex: 10,
+        // backgroundColor: "#eee",
+      }}
     >
       <Text>Please enable the location Service.</Text>
       <Button

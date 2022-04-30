@@ -13,10 +13,15 @@ import MapComponent from "../components/MapComponent";
 import { Marker, Polyline } from "react-native-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@rneui/themed";
-import { selectCurrentCoords } from "../store/slices/mapSlice";
+import {
+  selectCurrentCoords,
+  setDestinationCoords,
+} from "../store/slices/mapSlice";
 import BookingCard from "../components/BookingCard";
+import AbortController from "abort-controller";
 
 const DisplayParkingSpacesScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords); //users current location
 
   const [parkingSpaces, setParkingSpaces] = useState([
@@ -85,17 +90,22 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
   useEffect(() => {
     const abortController = new AbortController();
     if (selectedSpace) {
-      fetch(
-        `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${currentCoords.longitude},${currentCoords.latitude};${selectedSpace.location.coordinates[1]},${selectedSpace.location.coordinates[0]}?sources=0&destinations=1&access_token=${MAPBOX_ACCESS_TOKEN}`,
-        {
-          signal: abortController.signal,
-        }
-      )
-        .then((result) => result.json())
-        .then((res) => {
-          console.log(res);
-          setSpaceDetails(res);
-        });
+      try {
+        fetch(
+          `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${currentCoords.longitude},${currentCoords.latitude};${selectedSpace.location.coordinates[1]},${selectedSpace.location.coordinates[0]}?sources=0&destinations=1&access_token=${MAPBOX_ACCESS_TOKEN}`,
+          {
+            signal: abortController.signal,
+          }
+        )
+          .then((result) => result.json())
+          .then((res) => {
+            console.log(res);
+            setSpaceDetails(res);
+          })
+          .catch((e) => console.log(e));
+      } catch (error) {
+        console.log(error);
+      }
     }
     return () => abortController.abort();
   }, [selectedSpace]);
@@ -190,9 +200,12 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
               }}
               onPress={() => {
                 // //setDestination(region);
-                navigation.navigate("CarNavigationScreen", {
-                  destinationCoords: selectedSpace.location.coordinates,
-                });
+                // navigation.navigate("CarNavigationScreen", {
+                //   destinationCoords: selectedSpace.location.coordinates,
+                // });
+                dispatch(
+                  setDestinationCoords(selectedSpace.location.coordinates)
+                );
               }}
             />
           </View>

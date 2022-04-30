@@ -13,7 +13,10 @@ import MapComponent from "../components/MapComponent";
 import { Marker, Polyline } from "react-native-maps";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@rneui/themed";
-import { selectCurrentCoords } from "../store/slices/mapSlice";
+import {
+  selectCurrentCoords,
+  selectParkedCarLocation,
+} from "../store/slices/mapSlice";
 import BookingCard from "../components/BookingCard";
 
 const DisplayParkedCarLocation = ({ navigation, route }) => {
@@ -25,7 +28,8 @@ const DisplayParkedCarLocation = ({ navigation, route }) => {
   //fetch car's location
   useEffect(() => {}, []);
 
-  const { carLocation } = route.params; //get destination of the user
+  // const { carLocation } = route.params; //get destination of the user
+  const carLocation = useSelector(selectParkedCarLocation);
 
   useEffect(
     () =>
