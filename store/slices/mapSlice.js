@@ -50,6 +50,7 @@ export const getCurrentLocation = createAsyncThunk(
             accuracy: Location.Accuracy.BestForNavigation,
           },
           (location) => {
+            // console.log(location);
             dispatch(setCurrentCoords(location.coords));
           }
         );

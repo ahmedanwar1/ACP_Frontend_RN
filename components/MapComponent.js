@@ -145,9 +145,10 @@ const MapComponent = ({
             latitude: currentCoords.latitude,
             longitude: currentCoords.longitude,
           },
-          pitch: 5,
-          altitude: 15,
-          zoom: 18,
+          pitch: 50,
+          // altitude: 20,
+          zoom: 19,
+          heading: currentCoords.heading,
         },
         { duration: 500 }
       );

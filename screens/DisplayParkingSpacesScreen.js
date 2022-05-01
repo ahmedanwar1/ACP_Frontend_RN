@@ -30,7 +30,7 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
       _id: "6230e4050551177b1192d7cd",
       location: {
         type: "Point",
-        coordinates: [31.308337, 30.060701],
+        coordinates: [31.287765, 30.032445],
       },
       price: 15,
     },
@@ -38,19 +38,46 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
       _id: "6230e4050551177b1192d8cd",
       location: {
         type: "Point",
-        coordinates: [31.309337, 30.060701],
+        coordinates: [31.286756, 30.033346],
       },
-      price: 15,
+      price: 10,
     },
     {
       _id: "6230e4050551177b1192d9cd",
       location: {
         type: "Point",
-        coordinates: [31.308337, 30.060401],
+        coordinates: [31.289728, 30.029966],
       },
-      price: 15,
+      price: 25,
     },
   ]);
+
+  // const [parkingSpaces, setParkingSpaces] = useState([
+  //   {
+  //     _id: "6230e4050551177b1192d7cd",
+  //     location: {
+  //       type: "Point",
+  //       coordinates: [31.308337, 30.060701],
+  //     },
+  //     price: 15,
+  //   },
+  //   {
+  //     _id: "6230e4050551177b1192d8cd",
+  //     location: {
+  //       type: "Point",
+  //       coordinates: [31.309337, 30.060701],
+  //     },
+  //     price: 15,
+  //   },
+  //   {
+  //     _id: "6230e4050551177b1192d9cd",
+  //     location: {
+  //       type: "Point",
+  //       coordinates: [31.308337, 30.060401],
+  //     },
+  //     price: 15,
+  //   },
+  // ]);
   const [selectedSpace, setSelectedSpace] = useState(null); //the space that was picked (clicked) by user
   const [spaceDetails, setSpaceDetails] = useState(null); //the fetched details of the selected space
 
@@ -69,20 +96,6 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
   const handleSheetChanges = useCallback((index = 0) => {
     console.log("handleSheetChanges", index);
   }, []);
-
-  // //calculate the expected arrival date
-  // const calculateArrivalDate = (sec) => {
-  //   let timeObject = new Date();
-  //   timeObject = new Date(timeObject.getTime() + sec * 1000);
-  //   return timeObject;
-  // };
-
-  // //convert date into (dd/mm/yyyy h:i:s) format
-  // const convertDateToFormat = (date) => {
-  //   return `${date.getDate()}/${
-  //     date.getMonth() + 1
-  //   }/${date.getFullYear()} ${date.getMonth()}:${date.getHours()}:${date.getSeconds()}`;
-  // };
 
   //fetch parking spaces (recieve destination, time, date .... )
   useEffect(() => {}, []);
@@ -164,16 +177,6 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
                   alignItems: "center",
                 }}
               >
-                {/* <Text
-                  style={{
-                    fontSize: 17,
-                    color: "#000",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Expected Travel Time:{" "}
-                  {Math.floor(spaceDetails.durations[0][0] / 60)} mins
-                </Text> */}
                 <BookingCard
                   origin={{
                     name: spaceDetails.sources[0].name || "Unknown",
