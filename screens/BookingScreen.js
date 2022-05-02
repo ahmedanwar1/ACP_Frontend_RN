@@ -10,7 +10,7 @@ const currentBooking = {
     date: "Feb 12, 15:30",
   },
   destination: {
-    name: "AAST",
+    name: "Abou Qir",
     date: "Feb 12, 16:40",
   },
   price: 15,

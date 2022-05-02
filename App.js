@@ -14,10 +14,15 @@ import {
   NavigationContainer,
   useNavigation,
 } from "@react-navigation/native";
+import * as NavigationBar from "expo-navigation-bar";
 
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+  useEffect(() => {
+    NavigationBar.setBackgroundColorAsync("white");
+    NavigationBar.setButtonStyleAsync("dark");
+  }, []);
   return (
     <Provider store={store}>
       <NavigationContainer>

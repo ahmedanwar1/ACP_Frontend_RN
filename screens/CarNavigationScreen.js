@@ -22,6 +22,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
 
   //set array of directions coords for navigation
   const [multiPolyline, setMultiPolyline] = useState([]);
+  const [distance, setDistance] = useState(0);
   // const [openBarrier, setOpenBarrier] = useState(false);
   //expected remaining time to arrive
   // const [remainingTime, setRemainingTime] = useState(null);
@@ -54,6 +55,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
             dispatch(
               setRemainingTimeToArrive(Math.ceil(res.routes[0].duration / 60))
             );
+            setDistance((res.routes[0].distance / 1000).toFixed(2));
             const updatedCoordinates = [];
             //construct the recieved polylines (direction) array
             for (let i = 0; i < coordinates.length; i++) {
@@ -78,16 +80,26 @@ const CarNavigationScreen = ({ route, navigation }) => {
       <View
         style={{
           position: "absolute",
-          top: 0,
+          top: 15,
           justifyContent: "center",
           alignItems: "center",
           zIndex: 8,
-          backgroundColor: "#39B66A",
+          backgroundColor: "#fff",
+          right: 0,
+          padding: 10,
+          borderRadius: 7,
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.22,
+          shadowRadius: 2.22,
+          elevation: 3,
         }}
       >
-        {/* <Text style={{ color: "#fff", fontWeight: "500" }}>
-          Arrive in {remainingTime} mins
-        </Text> */}
+        <Text style={{ color: "#39B66A", fontWeight: "700", fontSize: 16 }}>
+          {distance} Km
+        </Text>
       </View>
       <MapComponent carNavigation={true}>
         {multiPolyline && (

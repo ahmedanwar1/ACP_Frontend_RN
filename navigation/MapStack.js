@@ -115,6 +115,9 @@ const MapStack = () => {
                   }
                 />
               ),
+              // headerRight: () => (
+              //   <Text style={{ color: "#fff", fontSize: 16 }}>11.2 Km</Text>
+              // ),
             }}
           />
         </Stack.Group>
