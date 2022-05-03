@@ -44,7 +44,7 @@ const MapStack = () => {
   useEffect(() => {
     checkGPS = setInterval(async () => {
       await dispatch(checkIfLocationEnabled());
-      console.log("GPS: ", GPSEnabled, currentCoords);
+      // console.log("GPS: ", GPSEnabled, currentCoords);
     }, 3000);
     return () => clearInterval(checkGPS);
   }, [GPSEnabled]);

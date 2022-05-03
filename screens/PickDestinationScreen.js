@@ -5,6 +5,7 @@ import MapComponent from "../components/MapComponent";
 import InputField from "../components/InputField";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import BottomSheet from "@gorhom/bottom-sheet";
+import date from "date-and-time";
 
 const PickDestinationScreen = ({ navigation }) => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -22,7 +23,7 @@ const PickDestinationScreen = ({ navigation }) => {
     console.log("handleSheetChanges", index);
   }, []);
 
-  const [date, setDate] = useState(new Date());
+  const [myDate, setDate] = useState(new Date());
   const [parkingDate, setParkingDate] = useState();
   const [parkingTime, setParkingTime] = useState();
   const [mode, setMode] = useState("date");
@@ -33,15 +34,15 @@ const PickDestinationScreen = ({ navigation }) => {
     if (selectedDate) {
       setDate(selectedDate);
       if (mode == "time") {
-        setParkingTime(
-          `${selectedDate.getHours()}:${selectedDate.getMinutes()}`
-        );
+        // `${date.format(new Date(), "MMM DD, hh:mm A")}`
+        setParkingTime(`${date.format(selectedDate, "hh:mm A")}`);
       } else if (mode == "date") {
-        setParkingDate(
-          `${selectedDate.getDate()}/${
-            selectedDate.getMonth() + 1
-          }/${selectedDate.getFullYear()}`
-        );
+        setParkingDate(`${date.format(selectedDate, "DD/MM/YYYY")}`);
+        // setParkingDate(
+        //   `${selectedDate.getDate()}/${
+        //     selectedDate.getMonth() + 1
+        //   }/${selectedDate.getFullYear()}`
+        // );
       }
     }
   };
@@ -152,7 +153,7 @@ const PickDestinationScreen = ({ navigation }) => {
             {show && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={date}
+                value={myDate}
                 mode={mode}
                 is24Hour={false}
                 onChange={onChangeDate}

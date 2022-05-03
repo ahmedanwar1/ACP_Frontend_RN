@@ -10,6 +10,79 @@ import {
 } from "../store/slices/mapSlice";
 import { useDispatch, useSelector } from "react-redux";
 
+//google maps style.
+const mapStyle = [
+  {
+    featureType: "all",
+    elementType: "labels.text.fill",
+    stylers: [
+      {
+        color: "#7c93a3",
+      },
+      {
+        lightness: "-10",
+      },
+    ],
+  },
+  {
+    featureType: "administrative.country",
+    elementType: "geometry",
+    stylers: [
+      {
+        visibility: "on",
+      },
+    ],
+  },
+  {
+    featureType: "administrative.country",
+    elementType: "geometry.stroke",
+    stylers: [
+      {
+        color: "#c2d1d6",
+      },
+    ],
+  },
+  {
+    featureType: "landscape",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#dde3e3",
+      },
+    ],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#c2d1d6",
+      },
+    ],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [
+      {
+        color: "#a9b4b8",
+      },
+      {
+        lightness: "0",
+      },
+    ],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#a3c7df",
+      },
+    ],
+  },
+];
+
 const MapComponent = ({
   children,
   showGPSButton = true,
@@ -18,141 +91,56 @@ const MapComponent = ({
   parkedCarLocation,
   enableInteraction = true,
 }) => {
+  let _mapView; //for map ref
+
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords); //get current coords of user
 
-  //center the map to fit all markrs in case of picking spaces
-  let marksCenter;
-  if (parkingSpaces) {
-    marksCoords = parkingSpaces.map((space) => {
-      return {
-        latitude: space.location.coordinates[0],
-        longitude: space.location.coordinates[1],
-      };
-    });
-    marksCenter = geolib.getCenter(marksCoords); //return the center coords of all spaces
-  }
-
+  const [mapReady, setMapReady] = useState(false);
   //init regin to start with.
   const [region, setRegion] = useState({
-    latitude: parkingSpaces ? marksCenter.latitude : currentCoords.latitude,
-    longitude: parkingSpaces ? marksCenter.longitude : currentCoords.longitude,
+    latitude: currentCoords ? currentCoords.latitude : 30,
+    longitude: currentCoords ? currentCoords.longitude : 31,
     latitudeDelta: parkingSpaces ? 0.02 : 0.0922,
     longitudeDelta: parkingSpaces ? 0.01 : 0.0421,
   });
 
-  let _mapView; //for map ref
+  const animateCamera = (center, props) => {
+    _mapView.animateCamera(
+      {
+        center: {
+          latitude: center.latitude,
+          longitude: center.longitude,
+        },
+        zoom: 15,
+        ...props,
+      },
+      { duration: 1000 }
+    );
+  };
 
   //update region when user moves. to be sent to the backend for fetching by selected coords
   const onRegionChangeHandler = (e) => {
     setRegion(e);
   };
 
-  //google maps style.
-  const mapStyle = [
-    {
-      featureType: "all",
-      elementType: "labels.text.fill",
-      stylers: [
-        {
-          color: "#7c93a3",
-        },
-        {
-          lightness: "-10",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.country",
-      elementType: "geometry",
-      stylers: [
-        {
-          visibility: "on",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.country",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#c2d1d6",
-        },
-      ],
-    },
-    {
-      featureType: "landscape",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#dde3e3",
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#c2d1d6",
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#a9b4b8",
-        },
-        {
-          lightness: "0",
-        },
-      ],
-    },
-    {
-      featureType: "water",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#a3c7df",
-        },
-      ],
-    },
-  ];
-
   //go to the users location on map when user clicks on gps button.
   const ChangeRegionToCurrentLocationHandler = (coords) => {
     console.log(currentCoords);
     if (currentCoords) {
-      _mapView.animateCamera(
-        {
-          center: coords,
-          pitch: 0,
-          altitude: 5,
-          zoom: 15,
-        },
-        { duration: 2000 }
-      );
+      animateCamera(coords, { pitch: 0, altitude: 5, zoom: 15 });
     }
   };
 
   const onUserLocationChangeHandler = () => {
     console.log("location changed");
     if (carNavigation) {
-      _mapView.animateCamera(
-        {
-          center: {
-            latitude: currentCoords.latitude,
-            longitude: currentCoords.longitude,
-          },
-          pitch: 50,
-          // altitude: 20,
-          zoom: 19,
-          heading: currentCoords.heading,
-        },
-        { duration: 500 }
-      );
+      animateCamera(currentCoords, {
+        pitch: 50,
+        // altitude: 20,
+        zoom: 19,
+        heading: currentCoords.heading,
+      });
     }
   };
 
@@ -164,9 +152,29 @@ const MapComponent = ({
     })();
   }, []);
 
+  useEffect(() => {
+    //center the map to fit all markrs in case of picking spaces
+    if (parkingSpaces && mapReady) {
+      let marksCenter;
+      const marksCoords = parkingSpaces.map((space) => {
+        return {
+          latitude: space.location.coordinates[0],
+          longitude: space.location.coordinates[1],
+        };
+      });
+      marksCenter = geolib.getCenter(marksCoords);
+      //return the center coords of all spaces
+      console.log(marksCenter);
+      if (marksCenter && mapReady) {
+        animateCamera(marksCenter, { zoom: 15 });
+      }
+    }
+  }, [parkingSpaces, mapReady]);
+
   return (
     <>
       <MapView
+        onMapReady={() => setMapReady(true)}
         customMapStyle={mapStyle}
         ref={(mapView) => {
           _mapView = mapView;
