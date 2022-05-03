@@ -4,6 +4,7 @@ import { Button } from "@rneui/themed";
 import MapComponent from "../components/MapComponent";
 import InputField from "../components/InputField";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 const PickDestinationScreen = ({ navigation }) => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
