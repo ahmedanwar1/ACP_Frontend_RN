@@ -156,7 +156,12 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
-          style={{ flex: 1 }}
+          style={{
+            flex: 1,
+            borderTopRightRadius: 50,
+            borderTopLeftRadius: 50,
+            overflow: "hidden",
+          }}
         >
           <View style={{ flex: 1, justifyContent: "space-between" }}>
             <View
