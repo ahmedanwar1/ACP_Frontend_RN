@@ -16,6 +16,7 @@ const MapComponent = ({
   parkingSpaces,
   carNavigation,
   parkedCarLocation,
+  enableInteraction = true,
 }) => {
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords); //get current coords of user
@@ -188,6 +189,11 @@ const MapComponent = ({
         showsMyLocationButton={false}
         showsCompass={false}
         onUserLocationChange={onUserLocationChangeHandler}
+        /** */
+        pitchEnabled={enableInteraction}
+        rotateEnabled={enableInteraction}
+        zoomEnabled={enableInteraction}
+        scrollEnabled={enableInteraction}
       >
         {children}
       </MapView>

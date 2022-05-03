@@ -80,7 +80,10 @@ const PickDestinationScreen = ({ navigation }) => {
             />
           </View>
         )}
-        <MapComponent showGPSButton={true}></MapComponent>
+        <MapComponent
+          showGPSButton={true}
+          enableInteraction={!showBottomSheet}
+        ></MapComponent>
         <Button
           title={"Pick a parking space".toUpperCase()}
           buttonStyle={{
