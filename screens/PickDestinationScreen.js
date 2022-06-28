@@ -6,6 +6,10 @@ import InputField from "../components/InputField";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import BottomSheet from "@gorhom/bottom-sheet";
 import date from "date-and-time";
+import { useSelector } from "react-redux";
+import { selectCurrentCoords } from "../store/slices/mapSlice";
+import axios from "axios";
+import Constants from "expo-constants";
 
 const PickDestinationScreen = ({ navigation }) => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -23,11 +27,17 @@ const PickDestinationScreen = ({ navigation }) => {
     console.log("handleSheetChanges", index);
   }, []);
 
+  let currentCoords = useSelector(selectCurrentCoords); //get current coords of user
+
   const [myDate, setDate] = useState(new Date());
   const [parkingDate, setParkingDate] = useState();
   const [parkingTime, setParkingTime] = useState();
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [selectedCoords, setSelectedCoords] = useState({
+    latitude: currentCoords ? currentCoords.latitude : 30,
+    longitude: currentCoords ? currentCoords.longitude : 31,
+  });
 
   const onChangeDate = (event, selectedDate) => {
     setShow(false);
@@ -44,12 +54,51 @@ const PickDestinationScreen = ({ navigation }) => {
         //   }/${selectedDate.getFullYear()}`
         // );
       }
+      // setDate(selectedDate);
+      console.log(selectedDate);
     }
   };
 
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
+  };
+
+  const { manifest } = Constants;
+
+  // const uri = `http://:4000`;
+
+  const searchHandler = () => {
+    //send req to backend with destination and time
+    // console.log(selectedCoords);
+    axios
+      .get(
+        `http://${manifest.debuggerHost
+          .split(":")
+          .shift()}:4000/getNearParkingSpaces?longitude=${
+          selectedCoords.longitude
+        }&latitude=${selectedCoords.latitude}`
+      )
+      .then((response) => {
+        console.log(response.data);
+        console.log(
+          `http://${manifest.debuggerHost
+            .split(":")
+            .shift()}:4000/getNearParkingSpaces?longitude=${
+            selectedCoords.longitude
+          }&latitude=${selectedCoords.latitude}`
+        );
+        if (parkingDate && parkingTime && !response.data.errorMsg) {
+          navigation.navigate("DisplayParkingSpacesScreen", {
+            parkingData: response.data,
+            SelectedDate: myDate,
+          });
+        }
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
   };
 
   return (
@@ -84,6 +133,7 @@ const PickDestinationScreen = ({ navigation }) => {
         <MapComponent
           showGPSButton={true}
           enableInteraction={!showBottomSheet}
+          setSelectedCoords={setSelectedCoords}
         ></MapComponent>
         <Button
           title={"Pick a parking space".toUpperCase()}
@@ -169,7 +219,7 @@ const PickDestinationScreen = ({ navigation }) => {
                 paddingVertical: 10,
               }}
               onPress={() => {
-                navigation.navigate("DisplayParkingSpacesScreen");
+                searchHandler();
               }}
             />
           </View>

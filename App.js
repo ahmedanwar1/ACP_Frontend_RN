@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import BookingScreen from "./screens/BookingScreen";
 import HistoryScreen from "./screens/HistoryScreen";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "./store/store";
 import MapStack from "./navigation/MapStack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -23,6 +23,7 @@ export default function App() {
     NavigationBar.setBackgroundColorAsync("white");
     NavigationBar.setButtonStyleAsync("dark");
   }, []);
+
   return (
     <Provider store={store}>
       <NavigationContainer>

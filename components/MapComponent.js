@@ -90,6 +90,7 @@ const MapComponent = ({
   carNavigation,
   parkedCarLocation,
   enableInteraction = true,
+  setSelectedCoords,
 }) => {
   let _mapView; //for map ref
 
@@ -122,6 +123,11 @@ const MapComponent = ({
   //update region when user moves. to be sent to the backend for fetching by selected coords
   const onRegionChangeHandler = (e) => {
     setRegion(e);
+    if (setSelectedCoords) {
+      setSelectedCoords(() => {
+        return e;
+      });
+    }
   };
 
   //go to the users location on map when user clicks on gps button.
@@ -158,8 +164,8 @@ const MapComponent = ({
       let marksCenter;
       const marksCoords = parkingSpaces.map((space) => {
         return {
-          latitude: space.location.coordinates[0],
-          longitude: space.location.coordinates[1],
+          latitude: space.coordinates[0],
+          longitude: space.coordinates[1],
         };
       });
       marksCenter = geolib.getCenter(marksCoords);
@@ -209,7 +215,7 @@ const MapComponent = ({
         <TouchableOpacity
           style={{
             position: "absolute",
-            bottom: parkedCarLocation ? 20 : 80,
+            bottom: parkedCarLocation ? 90 : 80,
             right: 10,
           }}
           onPress={() => {
@@ -233,7 +239,7 @@ const MapComponent = ({
         <TouchableOpacity
           style={{
             position: "absolute",
-            bottom: 100,
+            bottom: 180,
             right: 10,
           }}
           onPress={() => {

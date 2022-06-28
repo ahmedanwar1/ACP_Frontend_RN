@@ -12,6 +12,9 @@ import {
 } from "../store/slices/mapSlice";
 import { Button } from "@rneui/themed";
 import AbortController from "abort-controller";
+import axios from "axios";
+import Constants from "expo-constants";
+import { selectUserInfo } from "../store/slices/userSlice";
 
 const CarNavigationScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -19,6 +22,8 @@ const CarNavigationScreen = ({ route, navigation }) => {
   let currentCoords = useSelector(selectCurrentCoords); //get user's current coords
   // const { destinationCoords } = route.params; //get destination of the user
   const destinationCoords = useSelector(selectDestinationCoords);
+
+  const userInfo = useSelector(selectUserInfo);
 
   //set array of directions coords for navigation
   const [multiPolyline, setMultiPolyline] = useState([]);
@@ -42,20 +47,22 @@ const CarNavigationScreen = ({ route, navigation }) => {
     try {
       if (destinationCoords) {
         console.log();
-        fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
-          {
-            signal: abortController.signal,
-          }
-        )
-          .then((result) => result.json())
+        axios
+          .get(
+            `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
+            {
+              signal: abortController.signal,
+            }
+          )
           .then((res) => {
-            console.log(res);
-            const coordinates = res.routes[0].geometry.coordinates;
+            console.log(res.data);
+            const coordinates = res.data.routes[0].geometry.coordinates;
             dispatch(
-              setRemainingTimeToArrive(Math.ceil(res.routes[0].duration / 60))
+              setRemainingTimeToArrive(
+                Math.ceil(res.data.routes[0].duration / 60)
+              )
             );
-            setDistance((res.routes[0].distance / 1000).toFixed(2));
+            setDistance((res.data.routes[0].distance / 1000).toFixed(2));
             const updatedCoordinates = [];
             //construct the recieved polylines (direction) array
             for (let i = 0; i < coordinates.length; i++) {
@@ -74,6 +81,8 @@ const CarNavigationScreen = ({ route, navigation }) => {
     }
     return () => abortController.abort();
   }, [currentCoords]);
+
+  const { manifest } = Constants;
 
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
@@ -135,12 +144,28 @@ const CarNavigationScreen = ({ route, navigation }) => {
           //     latitude: destinationCoords[0],
           //   },
           // });
-          dispatch(
-            setParkedCarLocation({
-              longitude: destinationCoords[1],
-              latitude: destinationCoords[0],
+
+          axios
+            .post(
+              `http://${manifest.debuggerHost
+                .split(":")
+                .shift()}:4000/openBarrier`,
+              {
+                userId: userInfo.userId,
+              }
+            )
+            .then((response) => {
+              console.log(response.data);
+              if (!response.data.error) {
+                dispatch(
+                  setParkedCarLocation({
+                    longitude: destinationCoords[1],
+                    latitude: destinationCoords[0],
+                  })
+                );
+              }
             })
-          );
+            .catch((error) => console.log(error));
         }}
       />
     </View>

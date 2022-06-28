@@ -20,37 +20,42 @@ import {
 } from "../store/slices/mapSlice";
 import BookingCard from "../components/BookingCard";
 import AbortController from "abort-controller";
+import axios from "axios";
+import Constants from "expo-constants";
 
-const DisplayParkingSpacesScreen = ({ navigation }) => {
+const DisplayParkingSpacesScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   let currentCoords = useSelector(selectCurrentCoords); //users current location
 
-  const [parkingSpaces, setParkingSpaces] = useState([
-    {
-      _id: "6230e4050551177b1192d7cd",
-      location: {
-        type: "Point",
-        coordinates: [31.287765, 30.032445],
-      },
-      price: 15,
-    },
-    {
-      _id: "6230e4050551177b1192d8cd",
-      location: {
-        type: "Point",
-        coordinates: [31.286756, 30.033346],
-      },
-      price: 10,
-    },
-    {
-      _id: "6230e4050551177b1192d9cd",
-      location: {
-        type: "Point",
-        coordinates: [31.289728, 30.029966],
-      },
-      price: 25,
-    },
-  ]);
+  const parkingSpaces = route.params.parkingData.data;
+  const SelectedDate = route.params.SelectedDate;
+
+  // const [parkingSpaces, setParkingSpaces] = useState([
+  //   {
+  //     _id: "6230e4050551177b1192d7cd",
+  //     location: {
+  //       type: "Point",
+  //       coordinates: [31.287765, 30.032445],
+  //     },
+  //     price: 15,
+  //   },
+  //   {
+  //     _id: "6230e4050551177b1192d8cd",
+  //     location: {
+  //       type: "Point",
+  //       coordinates: [31.286756, 30.033346],
+  //     },
+  //     price: 10,
+  //   },
+  //   {
+  //     _id: "6230e4050551177b1192d9cd",
+  //     location: {
+  //       type: "Point",
+  //       coordinates: [31.289728, 30.029966],
+  //     },
+  //     price: 25,
+  //   },
+  // ]);
 
   // const [parkingSpaces, setParkingSpaces] = useState([
   //   {
@@ -105,16 +110,16 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
     const abortController = new AbortController();
     if (selectedSpace) {
       try {
-        fetch(
-          `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${currentCoords.longitude},${currentCoords.latitude};${selectedSpace.location.coordinates[1]},${selectedSpace.location.coordinates[0]}?sources=0&destinations=1&access_token=${MAPBOX_ACCESS_TOKEN}`,
-          {
-            signal: abortController.signal,
-          }
-        )
-          .then((result) => result.json())
+        axios
+          .get(
+            `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${currentCoords.longitude},${currentCoords.latitude};${selectedSpace.coordinates[1]},${selectedSpace.coordinates[0]}?sources=0&destinations=1&access_token=${MAPBOX_ACCESS_TOKEN}`,
+            {
+              signal: abortController.signal,
+            }
+          )
           .then((res) => {
             console.log(res);
-            setSpaceDetails(res);
+            setSpaceDetails(res.data);
           })
           .catch((e) => console.log(e));
       } catch (error) {
@@ -123,6 +128,32 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
     }
     return () => abortController.abort();
   }, [selectedSpace]);
+
+  const { manifest } = Constants;
+
+  const countinueToNextScreenHandler = () => {
+    // //setDestination(region);
+    // navigation.navigate("CarNavigationScreen", {
+    //   destinationCoords: selectedSpace.location.coordinates,
+    // });
+    axios
+      .post(
+        `http://${manifest.debuggerHost
+          .split(":")
+          .shift()}:4000/reserveParkingSpace`,
+        {
+          date: SelectedDate,
+          parkingSpaceId: selectedSpace,
+          studentNumber: "18103033",
+        }
+      )
+      .then((response) => {
+        if (!response.errorMsg) {
+          dispatch(setDestinationCoords(selectedSpace.coordinates));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
@@ -133,8 +164,8 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
               <Marker
                 key={space._id}
                 coordinate={{
-                  latitude: space.location.coordinates[0],
-                  longitude: space.location.coordinates[1],
+                  latitude: space.coordinates[0],
+                  longitude: space.coordinates[1],
                 }}
                 onPress={() => {
                   SelectSpaceHandler(space);
@@ -209,15 +240,7 @@ const DisplayParkingSpacesScreen = ({ navigation }) => {
                 borderRadius: 10,
                 paddingVertical: 10,
               }}
-              onPress={() => {
-                // //setDestination(region);
-                // navigation.navigate("CarNavigationScreen", {
-                //   destinationCoords: selectedSpace.location.coordinates,
-                // });
-                dispatch(
-                  setDestinationCoords(selectedSpace.location.coordinates)
-                );
-              }}
+              onPress={() => countinueToNextScreenHandler()}
             />
           </View>
         </BottomSheet>

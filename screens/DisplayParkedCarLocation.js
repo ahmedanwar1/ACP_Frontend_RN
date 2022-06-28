@@ -55,6 +55,17 @@ const DisplayParkedCarLocation = ({ navigation, route }) => {
           />
         </Marker>
       </MapComponent>
+      <Button
+        title={"Pay"}
+        buttonStyle={{
+          backgroundColor: "#39B66A",
+          marginBottom: 20,
+          marginHorizontal: 20,
+          borderRadius: 10,
+          paddingVertical: 10,
+        }}
+        onPress={() => {}}
+      />
     </View>
   );
 };
