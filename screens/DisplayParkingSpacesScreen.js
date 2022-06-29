@@ -144,7 +144,6 @@ const DisplayParkingSpacesScreen = ({ route, navigation }) => {
         {
           date: SelectedDate,
           parkingSpaceId: selectedSpace,
-          studentNumber: "18103033",
         }
       )
       .then((response) => {

@@ -149,10 +149,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
             .post(
               `http://${manifest.debuggerHost
                 .split(":")
-                .shift()}:4000/openBarrier`,
-              {
-                userId: userInfo.userId,
-              }
+                .shift()}:4000/openBarrier`
             )
             .then((response) => {
               console.log(response.data);

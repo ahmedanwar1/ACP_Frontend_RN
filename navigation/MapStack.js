@@ -11,6 +11,8 @@ import {
   selectRemainingTimeToArrive,
   selectDestinationCoords,
   selectParkedCarLocation,
+  setDestinationCoords,
+  setParkedCarLocation,
 } from "../store/slices/mapSlice";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -32,6 +34,7 @@ import {
 import LoginScreen from "../screens/LoginScreen";
 import SignupScreen from "../screens/SignupScreen";
 import axios from "axios";
+import Constants from "expo-constants";
 
 const Stack = createNativeStackNavigator();
 // const CarLocationStack = createNativeStackNavigator();
@@ -54,6 +57,39 @@ const MapStack = () => {
   //check frequently that GPS is enabled
   let checkGPS;
 
+  const getUserStatus = async () => {
+    axios
+      .get(`http://${manifest.debuggerHost.split(":").shift()}:4000/userStatus`)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.userStatus == "navigating") {
+          // dispatch(
+          // setParkedCarLocation({
+          //   longitude: destinationCoords[1],
+          //   latitude: destinationCoords[0],
+          // })
+          // );
+          dispatch(setDestinationCoords(response.data.coordinates));
+        } else if (response.data.userStatus == "parked") {
+          dispatch(
+            setParkedCarLocation({
+              longitude: response.data.coordinates[1],
+              latitude: response.data.coordinates[0],
+            })
+          );
+          // dispatch(setDestinationCoords(response.data.coordinates))
+        }
+      })
+      .catch((error) => console.log(error));
+
+    // const getUserToken = await AsyncStorage.getItem("userToken");
+    // const getUserInfo = await AsyncStorage.getItem("userInfo");
+    // if (getUserToken && getUserInfo) {
+    //   dispatch(setUserToken(getUserToken));
+    //   dispatch(setUserInfo(getUserInfo));
+    // }
+  };
+
   useEffect(() => {
     const isLoggedin = async () => {
       const getUserToken = await AsyncStorage.getItem("userToken");
@@ -64,13 +100,26 @@ const MapStack = () => {
       }
     };
     isLoggedin();
+    getUserStatus();
   }, []);
+
+  const { manifest } = Constants;
+  useEffect(() => {
+    getUserStatus();
+  }, [userToken]);
 
   axios.interceptors.request.use(
     async (config) => {
       const getUserToken = await AsyncStorage.getItem("userToken");
       // Do something before request is sent
-      config.headers.Authorization = `Bearer ${getUserToken}`;
+      if (getUserToken) {
+        config.headers.Authorization = `Bearer ${getUserToken}`;
+      } else {
+        dispatch(setUserToken(null));
+        dispatch(setUserInfo(null));
+        AsyncStorage.removeItem("userToken");
+        AsyncStorage.removeItem("userInfo");
+      }
       // console.log("hi", config.headers.Authorization, getUserToken, userInfo);
       // console.log(userToken, "hhhhhhh");
       return config;
