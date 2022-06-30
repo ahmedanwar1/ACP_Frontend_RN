@@ -90,7 +90,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
       )
       .then((response) => {
         console.log(response.data);
-        if (!response.data.error) {
+        if (!response.data.responseMessage.error) {
           dispatch(
             setParkedCarLocation({
               longitude: destinationCoords[1],
@@ -98,7 +98,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
             })
           );
         } else {
-          Alert.alert(response.data.message);
+          Alert.alert(response.data.responseMessage.message);
         }
       })
       .catch((error) => {

@@ -12,15 +12,53 @@ import {
   TouchableOpacity,
   // KeyboardAvoidingView
 } from "react-native";
+import axios from "axios";
+import { Alert } from "react-native";
+import Constants from "expo-constants";
 
 export default function SignupScreen({ navigation }) {
   const [uni_ID, setID] = useState("");
-  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   // const [carPlate, setCarPlate] = useState("");
   const [show, setShow] = React.useState(false);
   const [visible, setVisible] = React.useState(true);
+
+  const { manifest } = Constants;
+
+  const registerHandler = () => {
+    if (
+      uni_ID.trim() == "" ||
+      fullName.trim() == "" ||
+      password.trim() == "" ||
+      phoneNum.trim() == ""
+    ) {
+      return Alert.alert("Fill all inputs!");
+    }
+    axios
+      .post(
+        `http://${manifest.debuggerHost.split(":").shift()}:4000/register`,
+        {
+          name: fullName,
+          registration_number: uni_ID,
+          password,
+          phone: phoneNum,
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        if (!response.data.error) {
+          navigation.navigate("LoginScreen");
+          return Alert.alert("Registeration completed!");
+        } else {
+          Alert.alert(response.data.message);
+        }
+      })
+      .catch((error) => {
+        Alert.alert(error.response.data.message);
+      });
+  };
 
   return (
     // <View>
@@ -31,6 +69,15 @@ export default function SignupScreen({ navigation }) {
           style={styles.image}
           source={require("../assets/ACP_LOGO.png")}
         />
+
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Full Name"
+            placeholderTextColor="#003f5c"
+            onChangeText={(fullName) => setFullName(fullName)}
+          />
+        </View>
 
         <View style={styles.inputView}>
           <TextInput
@@ -66,15 +113,6 @@ export default function SignupScreen({ navigation }) {
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
-            placeholder="Email."
-            placeholderTextColor="#003f5c"
-            onChangeText={(email) => setEmail(email)}
-          />
-        </View>
-
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
             placeholder="Phone"
             placeholderTextColor="#003f5c"
             onChangeText={(phoneNum) => setPhoneNum(phoneNum)}
@@ -90,7 +128,12 @@ export default function SignupScreen({ navigation }) {
         />
       </View> */}
 
-        <TouchableOpacity style={styles.loginBtn}>
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={() => {
+            registerHandler();
+          }}
+        >
           <Text style={styles.loginText}>Register Now</Text>
         </TouchableOpacity>
 

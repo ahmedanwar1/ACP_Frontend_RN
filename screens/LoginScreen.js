@@ -20,14 +20,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
 
-  const [uni_ID, setID] = useState("18103033");
-  const [password, setPassword] = useState("123456789");
+  const [uni_ID, setID] = useState("");
+  const [password, setPassword] = useState("");
   const [show, setShow] = React.useState(false);
   const [visible, setVisible] = React.useState(true);
 
   const { manifest } = Constants;
 
   const loginHandler = () => {
+    if (uni_ID.trim() == "" || password.trim() == "") {
+      return Alert.alert("Fill all inputs!");
+    }
     console.log(uni_ID, password);
     axios
       .post(`http://${manifest.debuggerHost.split(":").shift()}:4000/login`, {
@@ -57,7 +60,7 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.TextInput}
           placeholder="Enter University ID"
-          defaultValue="18103033"
+          defaultValue=""
           placeholderTextColor="#003f5c"
           onChangeText={(uni_ID) => setID(uni_ID)}
         />
@@ -69,7 +72,7 @@ export default function LoginScreen({ navigation }) {
           placeholder="Password."
           placeholderTextColor="#003f5c"
           secureTextEntry={visible}
-          defaultValue="123456789"
+          defaultValue=""
           onChangeText={(password) => setPassword(password)}
         />
         <TouchableOpacity

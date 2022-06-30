@@ -144,6 +144,8 @@ const DisplayParkingSpacesScreen = ({ route, navigation }) => {
         {
           date: SelectedDate,
           parkingSpaceId: selectedSpace,
+          origin: spaceDetails.sources[0].name || "Unknown",
+          destination: spaceDetails.destinations[0].name || "Unknown",
         }
       )
       .then((response, error) => {

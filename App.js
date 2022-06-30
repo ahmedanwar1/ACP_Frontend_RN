@@ -16,6 +16,8 @@ import {
 } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import CustomDrawer from "./components/CustomDrawer";
+import AuthStack from "./navigation/AuthStack";
+import Main from "./navigation/Main";
 
 const Drawer = createDrawerNavigator();
 
@@ -29,51 +31,12 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <SafeAreaProvider>
-          <MyDrawer />
+          <Main />
           <StatusBar backgroundColor="rgba(0,0,0,0)" />
         </SafeAreaProvider>
       </NavigationContainer>
     </Provider>
   );
 }
-
-const MyDrawer = () => {
-  return (
-    <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawer {...props} />}
-      initialRouteName="MapStack"
-    >
-      <Drawer.Screen
-        name="MapStack"
-        component={MapStack}
-        options={{
-          headerShown: false,
-          // headerTintColor: "transparent",
-          title: "Reservation",
-        }}
-      />
-      <Drawer.Screen
-        name="BookingScreen"
-        component={BookingScreen}
-        options={{
-          title: "Booking",
-          headerTintColor: "#39B66A",
-          headerTitleAlign: "center",
-        }}
-      />
-      <Drawer.Screen
-        name="historyScreen"
-        component={HistoryScreen}
-        options={{
-          // headerTransparent: true,
-          headerTintColor: "#39B66A",
-          headerTitleAlign: "center",
-          title: "History",
-          headerStyle: {},
-        }}
-      />
-    </Drawer.Navigator>
-  );
-};
 
 const styles = StyleSheet.create({});

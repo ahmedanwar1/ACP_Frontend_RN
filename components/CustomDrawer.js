@@ -8,12 +8,21 @@ import {
 } from "@react-navigation/drawer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/base";
-import { useDispatch } from "react-redux";
-import { setUserInfo, setUserToken } from "../store/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectUserInfo,
+  setUserInfo,
+  setUserToken,
+} from "../store/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  setDestinationCoords,
+  setParkedCarLocation,
+} from "../store/slices/mapSlice";
 
 const CustomDrawer = (props) => {
   const dispatch = useDispatch();
+  const userInfo = useSelector(selectUserInfo);
   return (
     <View style={{ flex: 1, paddingHorizontal: 5 }}>
       {/* <Image
@@ -33,11 +42,13 @@ const CustomDrawer = (props) => {
       >
         <Image
           style={styles.image}
-          source={require("../assets/images/driving-school.png")}
+          source={require("../assets/images/hacker.png")}
         />
         <View>
-          <Text style={{ fontWeight: "700", fontSize: 14 }}>Ahmed Anwar</Text>
-          <Text>18103033</Text>
+          <Text style={{ fontWeight: "700", fontSize: 14 }}>
+            {userInfo.name}
+          </Text>
+          <Text>{userInfo.userId}</Text>
         </View>
       </View>
       <Button
@@ -51,12 +62,13 @@ const CustomDrawer = (props) => {
           // margin: 15,
         }}
         onPress={() => {
-          console.log("djdjdj");
+          props.navigation.closeDrawer();
           dispatch(setUserToken(null));
           dispatch(setUserInfo(null));
+          dispatch(setDestinationCoords(null));
+          dispatch(setParkedCarLocation(null));
           AsyncStorage.removeItem("userToken");
           AsyncStorage.removeItem("userInfo");
-          // props.navigation.closeDrawer();
         }}
       />
     </View>
@@ -65,10 +77,11 @@ const CustomDrawer = (props) => {
 
 const styles = StyleSheet.create({
   image: {
-    width: 80,
+    width: 70,
     // backgroundColor: "#F22",
-    height: 80,
+    height: 70,
     borderRadius: 50,
+    marginRight: 10,
   },
 });
 
