@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Alert } from "react-native";
 import React, {
   useCallback,
   useEffect,
@@ -146,12 +146,16 @@ const DisplayParkingSpacesScreen = ({ route, navigation }) => {
           parkingSpaceId: selectedSpace,
         }
       )
-      .then((response) => {
-        if (!response.errorMsg) {
+      .then((response, error) => {
+        if (!response.error) {
           dispatch(setDestinationCoords(selectedSpace.coordinates));
+        } else {
+          Alert.alert(response.data.message);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        Alert.alert(error.response.data.message);
+      });
   };
 
   return (

@@ -15,6 +15,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
+import CustomDrawer from "./components/CustomDrawer";
 
 const Drawer = createDrawerNavigator();
 
@@ -38,7 +39,10 @@ export default function App() {
 
 const MyDrawer = () => {
   return (
-    <Drawer.Navigator initialRouteName="MapStack">
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawer {...props} />}
+      initialRouteName="MapStack"
+    >
       <Drawer.Screen
         name="MapStack"
         component={MapStack}

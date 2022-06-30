@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentCoords } from "../store/slices/mapSlice";
 import axios from "axios";
 import Constants from "expo-constants";
+import { Alert } from "react-native";
 
 const PickDestinationScreen = ({ navigation }) => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -48,11 +49,6 @@ const PickDestinationScreen = ({ navigation }) => {
         setParkingTime(`${date.format(selectedDate, "hh:mm A")}`);
       } else if (mode == "date") {
         setParkingDate(`${date.format(selectedDate, "DD/MM/YYYY")}`);
-        // setParkingDate(
-        //   `${selectedDate.getDate()}/${
-        //     selectedDate.getMonth() + 1
-        //   }/${selectedDate.getFullYear()}`
-        // );
       }
       // setDate(selectedDate);
       console.log(selectedDate);
@@ -66,11 +62,10 @@ const PickDestinationScreen = ({ navigation }) => {
 
   const { manifest } = Constants;
 
-  // const uri = `http://:4000`;
-
   const searchHandler = () => {
-    //send req to backend with destination and time
-    // console.log(selectedCoords);
+    if (!parkingDate || !parkingTime) {
+      return Alert.alert("Date not provided!");
+    }
     axios
       .get(
         `http://${manifest.debuggerHost
@@ -88,16 +83,18 @@ const PickDestinationScreen = ({ navigation }) => {
             selectedCoords.longitude
           }&latitude=${selectedCoords.latitude}`
         );
-        if (parkingDate && parkingTime && !response.data.errorMsg) {
+        if (parkingDate && parkingTime && !response.data.error) {
           navigation.navigate("DisplayParkingSpacesScreen", {
             parkingData: response.data,
             SelectedDate: myDate,
           });
+        } else {
+          Alert.alert(response.data.message);
         }
       })
       .catch((error) => {
         // handle error
-        console.log(error);
+        Alert.alert(error.response.data.message);
       });
   };
 

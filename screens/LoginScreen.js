@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
@@ -10,6 +9,7 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -41,9 +41,11 @@ export default function LoginScreen({ navigation }) {
           dispatch(setUserInfo(response.data.user));
           AsyncStorage.setItem("userToken", response.data.token);
           AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        } else {
+          Alert.alert(response.message);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error.response.data.message));
   };
 
   return (
@@ -84,15 +86,6 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* <TouchableOpacity>
-        <Text
-          style={styles.forgot_button}
-          onPress={() => Linking.openURL("someLocation.com")}
-        >
-          Login now
-        </Text>
-      </TouchableOpacity> */}
-
       <TouchableOpacity style={styles.loginBtn} onPress={() => loginHandler()}>
         <Text style={styles.loginText}>Sign in</Text>
       </TouchableOpacity>
@@ -129,18 +122,13 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 45,
     marginBottom: 20,
-
-    // alignItems: "center",
     alignItems: "stretch",
   },
 
   TextInput: {
     height: 50,
-    // width: 100,
-    // paddingHorizontal: 0,
     flex: 1,
     padding: 10,
-    // marginLeft: 20,
     borderRadius: 10,
     borderColor: "#999",
     borderWidth: 1,
@@ -161,16 +149,11 @@ const styles = StyleSheet.create({
   },
 
   regNowText: {
-    // position: "absolute",
     color: "blue",
-    // right: 50,
-    // bottom: 199,
   },
 
   sideText: {
     position: "relative",
-    // left: -20,
-    // bottom: -10,
     margin: 20,
     color: "#000",
   },

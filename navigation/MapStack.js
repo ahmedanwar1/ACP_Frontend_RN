@@ -135,8 +135,8 @@ const MapStack = () => {
       // Do something with response data
       // console.log(response.data.success == false);
       if (
-        response.data.success != undefined &&
-        response.data.success == false
+        response.data.authSuccess != undefined &&
+        response.data.authSuccess == false
       ) {
         dispatch(setUserToken(null));
         dispatch(setUserInfo(null));

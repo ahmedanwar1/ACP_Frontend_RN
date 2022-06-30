@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { MAPBOX_ACCESS_TOKEN } from "@env";
 import MapComponent from "../components/MapComponent";
 import { Polyline } from "react-native-maps";
@@ -17,6 +17,7 @@ import Constants from "expo-constants";
 import { selectUserInfo } from "../store/slices/userSlice";
 
 const CarNavigationScreen = ({ route, navigation }) => {
+  const { manifest } = Constants;
   const dispatch = useDispatch();
 
   let currentCoords = useSelector(selectCurrentCoords); //get user's current coords
@@ -82,7 +83,28 @@ const CarNavigationScreen = ({ route, navigation }) => {
     return () => abortController.abort();
   }, [currentCoords]);
 
-  const { manifest } = Constants;
+  const openBarrierHandler = () => {
+    axios
+      .post(
+        `http://${manifest.debuggerHost.split(":").shift()}:4000/openBarrier`
+      )
+      .then((response) => {
+        console.log(response.data);
+        if (!response.data.error) {
+          dispatch(
+            setParkedCarLocation({
+              longitude: destinationCoords[1],
+              latitude: destinationCoords[0],
+            })
+          );
+        } else {
+          Alert.alert(response.data.message);
+        }
+      })
+      .catch((error) => {
+        Alert.alert(error.response.data.message);
+      });
+  };
 
   return (
     <View style={{ flex: 1, position: "relative", justifyContent: "flex-end" }}>
@@ -137,32 +159,7 @@ const CarNavigationScreen = ({ route, navigation }) => {
           paddingVertical: 10,
         }}
         onPress={() => {
-          // setOpenBarrier(true);
-          // navigation.navigate("DisplayParkedCarLocation", {
-          //   carLocation: {
-          //     longitude: destinationCoords[1],
-          //     latitude: destinationCoords[0],
-          //   },
-          // });
-
-          axios
-            .post(
-              `http://${manifest.debuggerHost
-                .split(":")
-                .shift()}:4000/openBarrier`
-            )
-            .then((response) => {
-              console.log(response.data);
-              if (!response.data.error) {
-                dispatch(
-                  setParkedCarLocation({
-                    longitude: destinationCoords[1],
-                    latitude: destinationCoords[0],
-                  })
-                );
-              }
-            })
-            .catch((error) => console.log(error));
+          openBarrierHandler();
         }}
       />
     </View>
