@@ -159,7 +159,14 @@ const CarNavigationScreen = ({ route, navigation }) => {
           paddingVertical: 10,
         }}
         onPress={() => {
-          openBarrierHandler();
+          Alert.alert("Open Barrier", "You are about to open the barrier.", [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Confirm", onPress: () => openBarrierHandler() },
+          ]);
         }}
       />
     </View>
