@@ -132,10 +132,6 @@ const DisplayParkingSpacesScreen = ({ route, navigation }) => {
   const { manifest } = Constants;
 
   const countinueToNextScreenHandler = () => {
-    // //setDestination(region);
-    // navigation.navigate("CarNavigationScreen", {
-    //   destinationCoords: selectedSpace.location.coordinates,
-    // });
     axios
       .post(
         `http://${manifest.debuggerHost

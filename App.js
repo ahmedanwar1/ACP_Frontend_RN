@@ -21,6 +21,12 @@ import Main from "./navigation/Main";
 
 const Drawer = createDrawerNavigator();
 
+import { YellowBox } from "react-native";
+
+YellowBox.ignoreWarnings([
+  "Non-serializable values were found in the navigation state",
+]);
+
 export default function App() {
   useEffect(() => {
     NavigationBar.setBackgroundColorAsync("white");

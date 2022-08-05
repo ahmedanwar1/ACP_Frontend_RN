@@ -124,8 +124,6 @@ const Main = () => {
         AsyncStorage.removeItem("userToken");
         AsyncStorage.removeItem("userInfo");
       }
-      // console.log("hi", config.headers.Authorization, getUserToken, userInfo);
-      // console.log(userToken, "hhhhhhh");
       return config;
     },
     function (error) {

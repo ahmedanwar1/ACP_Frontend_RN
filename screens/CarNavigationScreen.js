@@ -50,7 +50,9 @@ const CarNavigationScreen = ({ route, navigation }) => {
         console.log();
         axios
           .get(
-            `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
+            `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoords.longitude}, 
+            ${currentCoords.latitude};${destinationCoords[1]},${destinationCoords[0]}?
+            geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`,
             {
               signal: abortController.signal,
             }
