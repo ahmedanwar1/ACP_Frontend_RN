@@ -13,3 +13,4 @@ Requests are sent to the Mapbox API to get accurate directions as well as calcul
 <img src="./img/2.png" width="800"/>
 
 <img src="./img/3.png" width="800"/>
+
